@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "esnext",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "noEmitOnError": true
+  },
+"include": ["src/**/*.ts", "types.d.ts"],
+  "exclude": ["node_modules", "dist", "src/uploads"]
+}
