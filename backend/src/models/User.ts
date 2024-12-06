@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import mongoose, { Document, Schema, Model } from "mongoose";
 
 // Define an interface representing a document in MongoDB.
 interface IUser extends Document {
@@ -7,10 +7,6 @@ interface IUser extends Document {
   email: string;
   imageUrl: string;
   password: string;
-  planId: number;
-  creditBalance: number;
-  totalImageGenerated: number;
-  totalImagesManipulated: number;
 }
 
 // Create a Schema corresponding to the document interface.
@@ -37,27 +33,11 @@ const userSchema: Schema<IUser> = new Schema(
       type: String,
       required: true,
     },
-    planId: {
-      type: Number,
-      default: 1,
-    },
-    creditBalance: {
-      type: Number,
-      default: 5,
-    },
-    totalImageGenerated: {
-      type: Number,
-      default: 0,
-    },
-    totalImagesManipulated: {
-      type: Number,
-      default: 0,
-    }
   },
   { timestamps: true }
 );
 
 // Create a Model.
-const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
+const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
 
 export default User;

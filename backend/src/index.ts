@@ -13,6 +13,8 @@ import { handleLogout } from "./controllers/logoutController.js";
 
 // routers
 import userRouter from "./routes/userRouter.js";
+import documentRouter from "./routes/documentRouter.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -43,6 +45,9 @@ app.use((err : any, req : any, res : any, next : any) => {
 });
 
 app.use("/", userRouter);
+
+app.use("/document", documentRouter);
+
 
 // app.post('/refresh-token', refreshAccessToken);
 
