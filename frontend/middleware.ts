@@ -82,7 +82,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|favicon.ico).*)", // Catch all paths except static files and favicon
+    "/((?!_next/static).*)", // Catch all paths except static files and favicon
     "/doc/:id*",
   ],
 };

@@ -30,3 +30,15 @@ declare type CollaborativeRoomProps = {
   users: User[],
   currentUserType : UserType,
 };
+
+declare type registrationFormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+declare type signInFormData = {
+  email: string;
+  password: string;
+}

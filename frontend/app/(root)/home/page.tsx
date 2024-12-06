@@ -86,7 +86,7 @@ const Home = () => {
     };
 
     handleDocuments();
-  }, [page, cookies.accessToken, user, limitPages, ]);
+  }, [page, cookies.accessToken, user, limitPages ]);
 
   const [filteredDocuments, setFilteredDocuments] = useState<Room[]>([]);
 

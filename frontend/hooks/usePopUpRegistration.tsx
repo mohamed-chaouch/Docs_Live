@@ -1,21 +1,31 @@
 "use client";
 
 import { RegistrationSchema } from "@/Schema/RegistrationSchema";
-import { registrationFormData } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { signUp } from "@/services/signUp";
 import { logIn } from "@/services/logIn";
+import { SignInSchema } from "@/Schema/SignInSchema";
 
 export function usePopUpRegistration() {
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    register: SignUpRegister,
+    handleSubmit: handleSignUpSubmit,
+    formState: { errors: signUpErrors },
   } = useForm<registrationFormData>({
     resolver: zodResolver(RegistrationSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
+
+  const {
+    register: SignInRegister,
+    handleSubmit: handleSignInSubmit,
+    formState: { errors: signInErrors },
+  } = useForm<signInFormData>({
+    resolver: zodResolver(SignInSchema),
     mode: "onChange",
     reValidateMode: "onChange",
   });
@@ -28,7 +38,7 @@ export function usePopUpRegistration() {
 
   const [image, setImage] = useState<File | undefined>(undefined);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-    const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -65,38 +75,44 @@ export function usePopUpRegistration() {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const router = useRouter();
-  const submitInformation = async (data: registrationFormData) => {
-
+  const submitSignUp = async (data: registrationFormData) => {
     const fd = new FormData();
     fd.append("firstName", data.firstName);
     fd.append("lastName", data.lastName);
     fd.append("email", data.email);
     fd.append("password", data.password);
     if (image) {
-        fd.append("imageUrl", image);
-      }
+      fd.append("imageUrl", image);
+    }
 
-    if(typeValue === "Sign Up"){
-        await signUp(fd);
+    await signUp(fd);
     setTimeout(() => {
       router.push("/home");
     }, 100);
-    }else if(typeValue === "Sign In"){
-        await logIn(data.email, data.password);
-        setTimeout(() => {
-          router.push("/home");
-        }, 100);
 
-    }
+  };
+
+  const submitSignIn = async (data: signInFormData) => {
+    await logIn(data.email, data.password);
+    setTimeout(() => {
+      router.push("/home");
+    }, 100);
   };
 
   return {
-    imageUrl, setImageUrl, setImage, handleClick, handleImageChange, inputRef,
+    imageUrl,
+    setImageUrl,
+    setImage,
+    handleClick,
+    handleImageChange,
+    inputRef,
     typeValue,
     handleChangeTypeValue,
     showPassword,
     handleClickShowPassword,
-    register, handleSubmit, errors,
-    submitInformation,
+    SignUpRegister, SignInRegister,
+    handleSignUpSubmit, handleSignInSubmit,
+    signUpErrors, signInErrors,
+    submitSignUp, submitSignIn,
   };
 }
