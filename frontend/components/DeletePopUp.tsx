@@ -25,14 +25,15 @@ const DeletePopUp = ({
             <h1 className="text-lg">
               Do you really want to delete this document?{" "}
             </h1>
-            <h1 className="text-md font-bold">
-            This action is irreversible.
-            </h1>
+            <h1 className="text-md font-bold">This action is irreversible.</h1>
           </div>
-          <div className="flex items-center gap-x-2">
-            <Button className="bg-red-500 hover:bg-red-900 text-white" onClick={()=>{
+          <div className="flex items-center justify-center gap-x-2">
+            <Button
+              className="bg-red-500 hover:bg-red-900 text-white"
+              onClick={() => {
                 handleDeleteDocument();
-            }}>
+              }}
+            >
               Confirmer
             </Button>
             <Button

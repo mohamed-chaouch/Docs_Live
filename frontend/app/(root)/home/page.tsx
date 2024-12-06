@@ -92,15 +92,21 @@ const Home = () => {
   const [filteredDocuments, setFilteredDocuments] = useState<Room[]>([]);
 
   useEffect(() => {
-    const filtered = documents.filter((document) =>
-      document.metadata.title
-        .toLowerCase()
-        .includes(debouncedQuery.toLowerCase())
-    );
-    setFilteredDocuments(filtered);
-    setTotalPages(Math.ceil(filtered.length / Number(limitPages)));
+    if(documents.length > 0){
+      const filtered = documents.filter((document) =>
+        document.metadata.title
+          .toLowerCase()
+          .includes(debouncedQuery.toLowerCase())
+      );
+      setFilteredDocuments(filtered);
+      setTotalPages(Math.ceil(filtered.length / Number(limitPages)));
+    }else {
+      setFilteredDocuments([]);
+      setTotalPages(1);
+    }
   }, [debouncedQuery, documents]);
 
+  console.log(documents,": documentssssssss")
   // Include an "Add Document" card on the first page
   const displayedDocuments =
     page === 1 ? [<AddNewDocument key="add-card" />] : [];
@@ -108,6 +114,7 @@ const Home = () => {
     (page - 1) * limitPages,
     page * limitPages
   );
+
 
   return (
     <div className="sm:h-[calc(100vh-8px)] relative">
@@ -132,7 +139,7 @@ const Home = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 px-6 md:px-24 gap-y-8 md:gap-x-12 xl:gap-x-24">
           {displayedDocuments}
-          <ListDocuments documents={paginatedDocuments} page={page} />
+          <ListDocuments documents={paginatedDocuments} setDocuments={setDocuments} page={page} />
         </div>
       )}
 
