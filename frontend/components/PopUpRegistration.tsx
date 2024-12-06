@@ -32,15 +32,19 @@ const PopUpRegistration = ({
     handleChangeTypeValue,
     showPassword,
     handleClickShowPassword,
-    register,
-    handleSubmit,
-    errors,
-    submitInformation,
+    SignUpRegister,
+    SignInRegister,
+    handleSignUpSubmit,
+    handleSignInSubmit,
+    signUpErrors,
+    signInErrors,
+    submitSignUp,
+    submitSignIn,
   } = usePopUpRegistration();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="rounded-[10px] md:rounded-[10px] border-0 p-4">
+      <DialogContent className="md:rounded-[10px] border-0 p-4 max-h-[90vh] overflow-auto rounded-[10px]">
         <DialogTitle></DialogTitle>
         <Tabs
           value={typeValue} // Synchronize the Tabs value with typeValue state
@@ -52,9 +56,7 @@ const PopUpRegistration = ({
               value="Sign Up"
               className={cn(
                 "px-12",
-                typeValue === "Sign Up"
-                  ? "bg-orange-1"
-                  : "text-white"
+                typeValue === "Sign Up" ? "bg-orange-1" : "text-white"
               )}
             >
               Sign Up
@@ -63,9 +65,7 @@ const PopUpRegistration = ({
               value="Sign In"
               className={cn(
                 "px-12",
-                typeValue === "Sign In"
-                  ? "bg-orange-1"
-                  : "text-white"
+                typeValue === "Sign In" ? "bg-orange-1" : "text-white"
               )}
             >
               Sign In
@@ -75,7 +75,11 @@ const PopUpRegistration = ({
         <DialogHeader>
           <form
             className="flex flex-col items-center justify-center"
-            onSubmit={handleSubmit(submitInformation)}
+            onSubmit={
+              typeValue === "Sign Up"
+                ? handleSignUpSubmit(submitSignUp)
+                : handleSignInSubmit(submitSignIn)
+            }
           >
             {typeValue === "Sign Up" && (
               <>
@@ -123,28 +127,28 @@ const PopUpRegistration = ({
                   <div className="w-full">
                     <p className="text-left font-semibold">First Name</p>
                     <input
-                      {...register("firstName")}
+                      {...SignUpRegister("firstName")}
                       placeholder="First Name"
                       type="text"
                       className="w-full p-2 text-black border border-black rounded shadow-2xl"
                     />
-                    {errors.firstName && (
+                    {signUpErrors.firstName && (
                       <p className="text-red-500 text-sm text-left">
-                        {errors.firstName.message}
+                        {signUpErrors.firstName.message}
                       </p>
                     )}
                   </div>
                   <div className="w-full">
                     <p className="text-left font-semibold">Last Name</p>
                     <input
-                      {...register("lastName")}
+                      {...SignUpRegister("lastName")}
                       placeholder="Last Name"
                       type="text"
                       className="w-full p-2 text-black border border-black rounded shadow-2xl"
                     />
-                    {errors.lastName && (
+                    {signUpErrors.lastName && (
                       <p className="text-red-500 text-sm text-left">
-                        {errors.lastName.message}
+                        {signUpErrors.lastName.message}
                       </p>
                     )}
                   </div>
@@ -154,14 +158,21 @@ const PopUpRegistration = ({
             <div className="my-2 w-full">
               <p className="text-left font-semibold">Email </p>
               <input
-                {...register("email")}
+                {...(typeValue === "Sign Up"
+                  ? SignUpRegister("email")
+                  : SignInRegister("email"))}
                 placeholder="test@gmail.com"
                 type="email"
                 className="w-full p-2 text-black border border-black rounded shadow-2xl"
               />
-              {errors.email && (
+              {typeValue === "Sign Up" && signUpErrors.email && (
                 <p className="text-red-500 text-sm text-left">
-                  {errors.email.message}
+                  {signUpErrors.email.message}
+                </p>
+              )}
+              {typeValue === "Sign In" && signInErrors.email && (
+                <p className="text-red-500 text-sm text-left">
+                  {signInErrors.email.message}
                 </p>
               )}
             </div>
@@ -169,7 +180,9 @@ const PopUpRegistration = ({
               <p className="text-left font-semibold">Password</p>
               <div className="relative">
                 <input
-                  {...register("password")}
+                  {...(typeValue === "Sign Up"
+                    ? SignUpRegister("password")
+                    : SignInRegister("password"))}
                   type={showPassword ? "text" : "password"}
                   placeholder="*********"
                   className="w-full p-2 text-black border border-black rounded shadow-2xl"
@@ -185,9 +198,14 @@ const PopUpRegistration = ({
                   )}
                 </button>
               </div>
-              {errors.password && (
+              {typeValue === "Sign Up" && signUpErrors.password && (
                 <p className="text-red-500 text-sm text-left">
-                  {errors.password.message}
+                  {signUpErrors.password.message}
+                </p>
+              )}
+              {typeValue === "Sign In" && signInErrors.password && (
+                <p className="text-red-500 text-sm text-left">
+                  {signInErrors.password.message}
                 </p>
               )}
             </div>
