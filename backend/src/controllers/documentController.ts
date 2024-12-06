@@ -114,12 +114,11 @@ export const getDocumentsByUserEmail = async (
     });
 
     // Sort and paginate the data array
-    const rooms = roomsResponse.data
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
-      // .slice(skipAmount, skipAmount + Number(limit));
+    const rooms = roomsResponse.data.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    // .slice(skipAmount, skipAmount + Number(limit));
 
     // Count total rooms
     const totalRoomsShowedByUser = roomsResponse?.data?.length;
@@ -136,6 +135,27 @@ export const getDocumentsByUserEmail = async (
     res
       .status(500)
       .json({ message: "Error happened while getting rooms" + error });
+    return;
+  }
+};
+
+export const deleteDocument = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { roomId } = req.params;
+
+    const deletedRoom = await liveblocks.deleteRoom(roomId);
+
+    res
+      .status(200)
+      .json({ message: "Room deleted successfully", data: deletedRoom });
+    return;
+  } catch (error) {
+    res.status(500).json({
+      message: "Error happend while deleting the room" + error,
+    });
     return;
   }
 };
