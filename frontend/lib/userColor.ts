@@ -4,18 +4,18 @@ export const brightColors = [
   "#A4B0ED",
   "#E3E678",
   "#B4F0F0",
-  "#EFB5E1",
-  "#EFB5B6",
   "#B5EFBF",
-  "#FFBEBE",
-  "#FFD7BE",
+  "#EFB5E1",
   "#FFFDBE",
+  "#FFBEBF",
   "#EFFFBE",
   "#BEFFD1",
-  "#FFBEBF",
   "#E3BEFF",
+  "#FFD7BE",
   "#FFBEDD",
+  "#FFBEBE",
   "#BEF1FF",
+  "#EFB5B6",
 ];
 
 export function getUserColor(userId: string) {
@@ -28,6 +28,14 @@ export function getUserColor(userId: string) {
   return brightColors[colorIndex];
 }
 
-export function getRandomColor(index: number) {
-  return brightColors[index]
+export function getRandomColor(index: number, page: number) {
+  let itemsPerPage;
+  if (page === 1){
+    itemsPerPage = 8;
+  }else{
+    itemsPerPage = 9;
+  }
+  const globalIndex = index + (page - 1) * itemsPerPage;
+  return brightColors[globalIndex % brightColors.length];
 }
+

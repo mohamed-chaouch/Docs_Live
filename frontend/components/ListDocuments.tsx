@@ -11,15 +11,21 @@ import {
 } from "./ui/tooltip";
 import { useRouter } from "next/navigation";
 
-
-import { Room as LiveblocksRoom } from "@liveblocks/client";
+import { Room as LiveblocksRoom } from "@liveblocks/client";;
 interface Room extends LiveblocksRoom {
   metadata: RoomMetadata;
   createdAt: string;
 }
 
-const ListDocuments = ({ documents }: { documents: Room[] }) => {
+const ListDocuments = ({
+  documents,
+  page,
+}: {
+  page: number;
+  documents: Room[];
+}) => {
   const router = useRouter();
+
   return (
     <>
       {documents &&
@@ -28,11 +34,11 @@ const ListDocuments = ({ documents }: { documents: Room[] }) => {
           <div
             key={index}
             className={`flex flex-col items-center justify-center rounded-[20px] h-[130px] shadow-2xl ${
-              index === documents.length - 1
+              index === documents.length - 1 && ((documents.length === 9 && page !== 1) || (documents.length === 8 && page === 1))
                 ? "md:col-span-2 xl:col-span-1"
                 : ""
             }`}
-            style={{ backgroundColor: getRandomColor(index + 1) }}
+            style={{ backgroundColor: getRandomColor(index + 1, page) }}
           >
             <TooltipProvider>
               <Tooltip>
@@ -41,7 +47,10 @@ const ListDocuments = ({ documents }: { documents: Room[] }) => {
                     {document.metadata.title}
                   </h1>
                 </TooltipTrigger>
-                <TooltipContent side="top" className="bg-black text-white border-0">
+                <TooltipContent
+                  side="top"
+                  className="bg-black text-white border-0"
+                >
                   <p>{document.metadata.title}</p>
                 </TooltipContent>
               </Tooltip>
@@ -50,9 +59,12 @@ const ListDocuments = ({ documents }: { documents: Room[] }) => {
               Created about {dateConverter(document.createdAt)}
             </h2>
             <div className="flex items-center justify-center mt-4 gap-x-2">
-              <div className="flex items-center justify-center cursor-pointer w-9 h-9 p-2 rounded-full hover:bg-orange-1" onClick={()=>{
-                router.push(`/doc/${document.id}`)
-              }}>
+              <div
+                className="flex items-center justify-center cursor-pointer w-9 h-9 p-2 rounded-full hover:bg-orange-1"
+                onClick={() => {
+                  router.push(`/doc/${document.id}`);
+                }}
+              >
                 <Pencil className=" text-blue-500 hover:text-white" />
               </div>
               <div className="flex items-center justify-center cursor-pointer w-9 h-9 p-2 rounded-full hover:bg-orange-1">

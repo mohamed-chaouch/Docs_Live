@@ -205,14 +205,24 @@ const NavBar = ({
                   </TooltipProvider>
                 </span>
               )}
-
-              <Image
-                src={`${process.env.NEXT_PUBLIC_BASE_URL}${user.imageUrl}`}
-                alt="avatar"
-                width={36}
-                height={36}
-                className="rounded-[50%]"
-              />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="cursor-pointer rounded-[50%] border-[2px] border-black hover:border-yellow-1">
+                      <Image
+                        src={`${process.env.NEXT_PUBLIC_BASE_URL}${user.imageUrl}`}
+                        alt="avatar"
+                        width={36}
+                        height={36}
+                        className="rounded-[50%]"
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-yellow-1 border-0">
+                    <p>{user.firstName + " " + user.lastName}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <span onClick={logOut}>
                 <TooltipProvider>
                   <Tooltip>

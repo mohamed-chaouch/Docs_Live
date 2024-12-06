@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import AddNewDocument from "@/components/AddNewDocument";
 import ListDocuments from "@/components/ListDocuments";
@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
 import { Room as LiveblocksRoom } from "@liveblocks/client";
+import Loader from "@/components/Loader";
 interface Room extends LiveblocksRoom {
   metadata: RoomMetadata;
   usersAccesses: RoomAccesses;
@@ -62,7 +63,7 @@ const Home = () => {
       if (!user || !cookies?.accessToken) {
         router.push("/");
       }
-      
+
       try {
         setLoading(true);
 
@@ -86,7 +87,7 @@ const Home = () => {
     };
 
     handleDocuments();
-  }, [page, cookies.accessToken, user, limitPages ]);
+  }, [page, cookies.accessToken, user, limitPages]);
 
   const [filteredDocuments, setFilteredDocuments] = useState<Room[]>([]);
 
@@ -97,12 +98,19 @@ const Home = () => {
         .includes(debouncedQuery.toLowerCase())
     );
     setFilteredDocuments(filtered);
-    setPage(1); // Reset to first page when search query changes
     setTotalPages(Math.ceil(filtered.length / Number(limitPages)));
   }, [debouncedQuery, documents]);
 
+  // Include an "Add Document" card on the first page
+  const displayedDocuments =
+    page === 1 ? [<AddNewDocument key="add-card" />] : [];
+  const paginatedDocuments = filteredDocuments.slice(
+    (page - 1) * limitPages,
+    page * limitPages
+  );
+
   return (
-    <div>
+    <div className="sm:h-[calc(100vh-8px)] relative">
       <NavBar listDoc={true} />
       <div className="block md:flex items-center justify-between px-6 md:px-24 my-6">
         <h1 className="text-3xl font-bold text-orange-1">List of Documents</h1>
@@ -119,12 +127,17 @@ const Home = () => {
           </span>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 px-6 md:px-24 gap-y-8 md:gap-x-24">
-        <AddNewDocument />
-        <ListDocuments documents={filteredDocuments} />
-      </div>
+      {loading ? (
+        <Loader className="h-[500px]" />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 px-6 md:px-24 gap-y-8 md:gap-x-12 xl:gap-x-24">
+          {displayedDocuments}
+          <ListDocuments documents={paginatedDocuments} page={page} />
+        </div>
+      )}
+
       {totalPages > 1 && (
-        <Pagination className="my-10">
+        <Pagination className="sm:absolute sm:bottom-6 sm:right-2 my-6 sm:my-0">
           <PaginationContent className="flex items-center justify-end w-full pr-3 md:pr-16">
             <Button
               className="w-8 h-8 rounded-full bg-yellow-1 hover:bg-orange-1"

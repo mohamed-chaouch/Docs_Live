@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema } from "mongoose";
 // Create a Schema corresponding to the document interface.
 const userSchema = new Schema({
     firstName: {
@@ -22,23 +22,7 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
-    planId: {
-        type: Number,
-        default: 1,
-    },
-    creditBalance: {
-        type: Number,
-        default: 5,
-    },
-    totalImageGenerated: {
-        type: Number,
-        default: 0,
-    },
-    totalImagesManipulated: {
-        type: Number,
-        default: 0,
-    }
 }, { timestamps: true });
 // Create a Model.
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;

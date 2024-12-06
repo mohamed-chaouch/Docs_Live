@@ -10,6 +10,7 @@ import { handleRefreshToken } from "./controllers/refreshTokenController.js";
 import { handleLogout } from "./controllers/logoutController.js";
 // routers
 import userRouter from "./routes/userRouter.js";
+import documentRouter from "./routes/documentRouter.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import "./config/connect.js";
@@ -30,6 +31,7 @@ app.use((err, req, res, next) => {
     res.status(500).send("Something broke!");
 });
 app.use("/", userRouter);
+app.use("/document", documentRouter);
 // app.post('/refresh-token', refreshAccessToken);
 app.post("/refresh-token", handleRefreshToken);
 // Serve static files

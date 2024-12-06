@@ -16,8 +16,6 @@ interface UserObject {
   lastName: string;
   email: string;
   imageUrl: string;
-  planId: number;
-  creditBalance: number;
 }
 
 // Generate Access Token
@@ -79,8 +77,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       lastName: user.lastName,
       email: user.email,
       imageUrl: user.imageUrl,
-      planId: user.planId!,
-      creditBalance: user.creditBalance!,
     });
 
     const refreshToken = await generateRefreshToken({
@@ -89,8 +85,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       lastName: user.lastName,
       email: user.email,
       imageUrl: user.imageUrl,
-      planId: user.planId!,
-      creditBalance: user.creditBalance!,
     });
 
     console.log(accessToken, ": access token");
@@ -152,8 +146,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       lastName: user.lastName,
       email: user.email,
       imageUrl: user.imageUrl,
-      planId: user.planId!,
-      creditBalance: user.creditBalance!,
     });
 
     const refreshToken = await generateRefreshToken({
@@ -162,8 +154,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       lastName: user.lastName,
       email: user.email,
       imageUrl: user.imageUrl,
-      planId: user.planId!,
-      creditBalance: user.creditBalance!,
     });
 
     console.log(accessToken, ": access token");
@@ -262,3 +252,26 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: error });
   }
 };
+
+export const getUsersByUserEmails = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userIds } = req.body;
+
+    const data = await User.find({ email: {
+      $in: userIds,
+    } })
+
+    const users = data.map((user) => ({
+      id: user._id,
+      name: `${user.firstName} ${user.lastName}`,
+      email: user.email,
+      avatar: user.imageUrl,
+    }))
+
+    res.status(200).json({ users: users });
+    return;
+  }catch(error){
+    res.status(500).json({ message: "Failed when we try to getting the users", error });
+    return;
+  }
+}

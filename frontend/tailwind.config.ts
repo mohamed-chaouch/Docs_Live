@@ -17,6 +17,28 @@ export default {
 			orange: {
 				1 : "#FFBB1B"
 			},
+			gray :{
+				1 : "#c8c8c8"
+			},
+			list :{
+				1 : "#FFD7BE",
+				2 : "#EFFFBE",
+				3 : "#BEFFD1",
+				4 : "#FFBEBF",
+				5 : "#E3BEFF",
+				6 : "#FFBEDD",
+				7 : "#BEF1FF",
+				8 : "#B5EFBF",
+				9 : "#FFBEBE",
+				10 : "#FFFDBE",
+				11 : "#FCFCFC",
+				12 : "#F2CE7A",
+				13 : "#A4B0ED",
+				14 : "#E3E678",
+				15 : "#B4F0F0",
+				16 : "#EFB5E1",
+				17 : "#EFB5B6",
+			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
