@@ -7,7 +7,7 @@ import NavBar from "./Navbar";
 import { useState } from "react";
 import api from "@/utils/axios";
 import DeletePopUp from "./DeletePopUp";
-import { useRouter } from "next/navigation";
+import { useDeleteDocument } from "@/hooks/useDeleteDocument";
 
 const CollaborativeRoom = ({
   roomId,
@@ -30,19 +30,11 @@ const CollaborativeRoom = ({
     }
   };
 
-  const router = useRouter();
-  const [deleteDocument, setDeleteDocument] = useState(false);
-
-  const handleDeleteDocument = async () => {
-    try {
-      await api.delete(`document/delete-document/${roomId}`);
-      router.push("/home");
-    } catch (error) {
-      console.error("Error deleting document:", error);
-    } finally {
-      setDeleteDocument(false);
-    }
-  };
+  const {
+    deleteDocument,
+    setDeleteDocument,
+    handleDeleteDocument,
+  } = useDeleteDocument(roomId);
 
   return (
     <RoomProvider id={roomId}>

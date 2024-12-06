@@ -11,20 +11,33 @@ import {
 } from "./ui/tooltip";
 import { useRouter } from "next/navigation";
 
-import { Room as LiveblocksRoom } from "@liveblocks/client";;
+import { Room as LiveblocksRoom } from "@liveblocks/client";
+import React, { useState } from "react";
+import DeletePopUp from "./DeletePopUp";
+import { useDeleteDocument } from "@/hooks/useDeleteDocument";
 interface Room extends LiveblocksRoom {
   metadata: RoomMetadata;
+  usersAccesses: RoomAccesses;
   createdAt: string;
 }
 
 const ListDocuments = ({
   documents,
+  setDocuments,
   page,
 }: {
-  page: number;
   documents: Room[];
+  setDocuments: React.Dispatch<React.SetStateAction<Room[]>>
+  page: number;
 }) => {
   const router = useRouter();
+  const [documentId, setDocumentId] = useState("");
+
+  const {
+    deleteDocument,
+    setDeleteDocument,
+    handleDeleteDocument,
+  } = useDeleteDocument(documentId, setDocuments);
 
   return (
     <>
@@ -34,7 +47,9 @@ const ListDocuments = ({
           <div
             key={index}
             className={`flex flex-col items-center justify-center rounded-[20px] h-[130px] shadow-2xl ${
-              index === documents.length - 1 && ((documents.length === 9 && page !== 1) || (documents.length === 8 && page === 1))
+              index === documents.length - 1 &&
+              ((documents.length === 9 && page !== 1) ||
+                (documents.length === 8 && page === 1))
                 ? "md:col-span-2 xl:col-span-1"
                 : ""
             }`}
@@ -68,11 +83,26 @@ const ListDocuments = ({
                 <Pencil className=" text-blue-500 hover:text-white" />
               </div>
               <div className="flex items-center justify-center cursor-pointer w-9 h-9 p-2 rounded-full hover:bg-orange-1">
-                <Trash2 className=" text-red-500 hover:text-white" />
+                <Trash2
+                  className=" text-red-500 hover:text-white"
+                  onClick={() => {
+                    setDeleteDocument(true);
+                    setDocumentId(document.id);
+                  }}
+                />
               </div>
             </div>
           </div>
         ))}
+      {deleteDocument && (
+        <DeletePopUp
+          isOpen={deleteDocument}
+          onClose={() => {
+            setDeleteDocument(false);
+          }}
+          handleDeleteDocument={handleDeleteDocument}
+        />
+      )}
     </>
   );
 };
