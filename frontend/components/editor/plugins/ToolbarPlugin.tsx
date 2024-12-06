@@ -123,7 +123,7 @@ export default function ToolbarPlugin() {
   }
 
   return (
-    <div className="toolbar m-[10px] md:my[10px] md:mx-16 border-[2px] border-black rounded-[10px]" ref={toolbarRef}>
+    <div className="toolbar flex-wrap" ref={toolbarRef}>
       <button
         disabled={!canUndo}
         onClick={() => {

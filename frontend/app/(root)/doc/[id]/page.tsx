@@ -14,7 +14,7 @@ interface Room extends LiveblocksRoom {
   createdAt: string;
 }
 
-const Document = ({ params: {id} }: { params: { id: string } }) => {
+const Document = ({ params: { id } }: { params: { id: string } }) => {
   const [cookies] = useCookies(["accessToken"]);
   const router = useRouter();
   const { user } = useUserInfo();
@@ -51,7 +51,7 @@ const Document = ({ params: {id} }: { params: { id: string } }) => {
 
   // Fetch user data
   useEffect(() => {
-    if (room && cookies.accessToken) {
+    if (room && cookies.accessToken && user) {
       const userIds = Object.keys(room.usersAccesses);
 
       const handleUsers = async () => {
@@ -68,7 +68,9 @@ const Document = ({ params: {id} }: { params: { id: string } }) => {
 
         const usersData = response.data.users.map((user: User) => ({
           ...user,
-          userType: room.usersAccesses[user.email]?.includes(["room:write"])
+          userType: (room.usersAccesses[user.email] as string[])?.includes(
+            "room:write"
+          )
             ? "editor"
             : "viewer",
         }));
@@ -76,10 +78,12 @@ const Document = ({ params: {id} }: { params: { id: string } }) => {
         setUsers(usersData);
 
         setCurrentUserType(
-          room.usersAccesses[user.email]?.includes(["room:write"])
+          (room.usersAccesses[user.email] as string[]).includes("room:write")
             ? "editor"
             : "viewer"
         );
+        // console.log(room.usersAccesses[user.email]?.includes("room:write"), "userAccesses")
+        // console.log(room.usersAccesses[user.email], "userAccesses2")
       };
 
       handleUsers();
