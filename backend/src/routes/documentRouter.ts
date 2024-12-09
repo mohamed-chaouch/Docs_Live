@@ -5,6 +5,7 @@ import {
   deleteDocument,
   getDocument,
   getDocumentsByUserEmail,
+  getDocumentUsers,
   updateDocumentTitle,
 } from "../controllers/documentController.js";
 
@@ -22,6 +23,13 @@ router.get(
   verifyToken,
   getDocumentsByUserEmail
 );
+
+router.get(
+  "/get-document-users/:roomId/:text",
+  verifyToken,
+  getDocumentUsers
+);
+
 
 router.delete("/delete-document/:roomId", verifyToken, deleteDocument);
 

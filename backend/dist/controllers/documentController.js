@@ -120,3 +120,25 @@ export const deleteDocument = async (req, res) => {
         return;
     }
 };
+export const getDocumentUsers = async (req, res) => {
+    try {
+        const { roomId, text } = req.params;
+        if (!req.user) {
+            res.status(400).send("user not found");
+            return;
+        }
+        const room = await liveblocks.getRoom(roomId);
+        const users = Object.keys(room.usersAccesses).filter(email => email !== req.user.email);
+        if (text.length) {
+            const filteredUsers = users.filter((email) => email.toLowerCase().includes(text.toLowerCase()));
+            res.status(200).json({ message: "Users fetched successfully", roomUsers: filteredUsers });
+            return;
+        }
+        res.status(200).json({ message: "Users fetched successfully", roomUsers: users });
+        return;
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error happened while getting doucment users" + error });
+        return;
+    }
+};
