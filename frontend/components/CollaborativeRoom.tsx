@@ -4,7 +4,7 @@ import { ClientSideSuspense, RoomProvider } from "@liveblocks/react";
 import Loader from "./Loader";
 import { Editor } from "./editor/Editor";
 import NavBar from "./Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "@/utils/axios";
 import DeletePopUp from "./DeletePopUp";
 import { useDeleteDocument } from "@/hooks/useDeleteDocument";
@@ -15,6 +15,7 @@ const CollaborativeRoom = ({
   users,
   currentUserType,
 }: CollaborativeRoomProps) => {
+
   const [title, setTitle] = useState(roomMetadata.title);
 
   const updateTitleHandler = async () => {

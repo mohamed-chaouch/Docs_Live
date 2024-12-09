@@ -44,7 +44,7 @@ const PopUpRegistration = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="md:rounded-[10px] border-0 p-4 max-h-[90vh] overflow-auto rounded-[10px]">
+      <DialogContent className="bg-white md:rounded-[10px] border-0 p-4 max-h-[90vh] overflow-auto rounded-[10px]">
         <DialogTitle></DialogTitle>
         <Tabs
           value={typeValue} // Synchronize the Tabs value with typeValue state

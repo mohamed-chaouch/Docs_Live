@@ -9,8 +9,13 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import React, { useState } from "react";
-import { liveblocksConfig } from "@liveblocks/react-lexical";
+import {
+  FloatingComposer,
+  FloatingThreads,
+  liveblocksConfig,
+  LiveblocksPlugin,
+  useEditorStatus,
+} from "@liveblocks/react-lexical";
 import { Trash } from "lucide-react";
 import {
   Tooltip,
@@ -18,6 +23,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import Loader from "../Loader";
+import FloatingToolbarPlugin from "./plugins/FloatingToolbarPlugin";
+import { useThreads } from "@liveblocks/react/suspense";
+import { useEffect, useState } from "react";
+import Comments from "../Comments";
 // Catch any errors that occur during Lexical updates and log them
 // or throw them as needed. If you don't throw them, Lexical will
 // try to recover gracefully without losing user data.
@@ -35,6 +45,45 @@ export function Editor({
   currentUserType: UserType;
   setDeleteDocument: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const [avatarsReady, setAvatarsReady] = useState(false);
+
+  useEffect(() => {
+    // Check if avatars are already in the DOM
+    const checkAvatars = () => {
+      const avatarImages = document.querySelectorAll(".lb-avatar-image");
+
+      if (avatarImages.length > 0) {
+        setAvatarsReady(true); // Set to true when avatars are found
+        updateAvatars(avatarImages); // Update avatars immediately
+      }
+    };
+
+    const updateAvatars = (avatarImages: NodeListOf<Element>) => {
+      avatarImages.forEach((avatarImage) => {
+        if (avatarImage instanceof HTMLImageElement) {
+          const currentSrc = avatarImage.src;
+          const avatarName = currentSrc.substring(
+            currentSrc.lastIndexOf("/") + 1
+          );
+          avatarImage.src = `${process.env.NEXT_PUBLIC_BASE_URL}${avatarName}`;
+        }
+      });
+    };
+
+    // Check avatars once on component mount
+    checkAvatars();
+
+    // Set up an interval to keep checking periodically (in case avatars are added later)
+    const intervalId = setInterval(() => {
+      checkAvatars();
+    }, 500); // Check every 500ms
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const status = useEditorStatus();
+  const { threads } = useThreads();
   const initialConfig = liveblocksConfig({
     namespace: "Editor",
     nodes: [HeadingNode],
@@ -48,9 +97,10 @@ export function Editor({
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="editor-container">
-        <div className="flex items-center justify-between rounded-[10px] border-[2px] border-black m-[10px] md:my[10px] md:mx-16 ">
+      <div className="editor-container size-full">
+        <div className="flex items-center justify-between border-[2px] border-black m-[10px] md:my[10px] md:mx-16 px-2 rounded-[10px]">
           <ToolbarPlugin />
+          <div className="border-[0.5px] border-gray-1 h-[60px] mr-2 flex sm:hidden"></div>
           {currentUserType === "editor" && (
             <span
               onClick={() => {
@@ -76,18 +126,32 @@ export function Editor({
           )}
         </div>
 
-        <div className="editor-inner min-h-[calc(100vh-225px)] sm:min-h-[calc(100vh-135px)] m-[10px] md:my[10px] md:mx-16 rounded-[10px]">
-          <div>
-            <RichTextPlugin
-              contentEditable={
-                <ContentEditable className="editor-input h-full" />
-              }
-              placeholder={<Placeholder />}
-              ErrorBoundary={LexicalErrorBoundary}
+        <div className="flex justify-start m-[10px] md:my-[10px] md:mx-16 gap-4">
+          {status === "not-loaded" || status === "loading" ? (
+            <Loader />
+          ) : (
+            <div className="editor-inner flex-1 w-full lg:w-2.5/3 h-fit min-h-[calc(100vh-225px)] sm:min-h-[calc(100vh-130px)] rounded-[10px]">
+              <RichTextPlugin
+                contentEditable={
+                  <ContentEditable className="editor-input h-full" />
+                }
+                placeholder={<Placeholder />}
+                ErrorBoundary={LexicalErrorBoundary}
+              />
+              {currentUserType === "editor" && <FloatingToolbarPlugin />}
+              <HistoryPlugin />
+              <AutoFocusPlugin />
+            </div>
+          )}
+
+          <LiveblocksPlugin>
+            <FloatingComposer className="w-[350px] p-2 rounded-[10px]" />
+            <FloatingThreads
+              threads={threads}
+              className="w-[350px] p-2 rounded-[10px]"
             />
-            <HistoryPlugin />
-            <AutoFocusPlugin />
-          </div>
+            <Comments />
+          </LiveblocksPlugin>
         </div>
       </div>
     </LexicalComposer>

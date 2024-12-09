@@ -58,7 +58,7 @@ const ListDocuments = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <h1 className="mt-3 text-2xl font-bold w-full text-center px-6 truncate">
+                  <h1 className="mt-3 text-xl font-bold w-full text-center px-6 truncate">
                     {document.metadata.title}
                   </h1>
                 </TooltipTrigger>

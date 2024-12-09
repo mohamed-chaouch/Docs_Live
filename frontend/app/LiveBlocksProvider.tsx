@@ -12,20 +12,29 @@ import { useRouter } from "next/navigation";
 
 const LiveBlocsProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const [cookies] = useCookies(["accessToken"])
+  const [cookies] = useCookies(["accessToken"]);
   return (
     <LiveblocksProvider
+      authEndpoint="/api/liveblocks-auth"
       resolveUsers={async ({ userIds }) => {
-        if(!cookies.accessToken) router.push("/")
-        const response = await api.post("get-users", { userIds: userIds }, {
-          headers: {
-            Authorization: `Bearer ${cookies.accessToken}`,
-            "Content-Type": "application/json",
-          },
-        });
+        if (!cookies.accessToken) router.push("/");
+        const response = await api.post(
+          "get-users",
+          { userIds: userIds },
+          {
+            headers: {
+              Authorization: `Bearer ${cookies.accessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         return response.data.users;
       }}
-      authEndpoint="/api/liveblocks-auth"
+      resolveMentionSuggestions={async ({ text, roomId })=> {
+        const response = await api.get(`document/get-document-users/${roomId}/${text}`)
+
+        return response.data.roomUsers;
+      }}
     >
       <ClientSideSuspense fallback={<Loader />}>{children}</ClientSideSuspense>
     </LiveblocksProvider>

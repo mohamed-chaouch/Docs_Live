@@ -15,7 +15,7 @@ const DeletePopUp = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="md:rounded-[10px] border-0 p-4 max-h-[90vh] overflow-auto rounded-[10px]">
-        <DialogTitle className="font-semibold text-xl text-yellow-900">
+        <DialogTitle className="font-semibold text-xl text-yellow-900 text-center">
           Delete Document
         </DialogTitle>
 
