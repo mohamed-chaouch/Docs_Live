@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { randomUUID } from "crypto";
 
 import { Liveblocks, RoomAccesses } from "@liveblocks/node";
+import User from "../models/User.js";
 export const liveblocks = new Liveblocks({
   secret: process.env.LIVEBLOCKS_SECRET_KEY as string,
 });
@@ -56,12 +57,12 @@ export const getDocument = async (
 
     const room = await liveblocks.getRoom(roomId);
 
-    // const hasAccess = Object.keys(room.usersAccesses).includes(userId);
+    const hasAccess = Object.keys(room.usersAccesses).includes(userId);
 
-    // if (!hasAccess) {
-    //   res.status(403).json({ message: "You don't have access to this room" });
-    //   return;
-    // }
+    if (!hasAccess) {
+      res.status(403).json({ message: "You don't have access to this room" });
+      return;
+    }
 
     res.status(200).json({ message: "Room fetched successfully", data: room });
     return;
@@ -160,29 +161,124 @@ export const deleteDocument = async (
   }
 };
 
-export const getDocumentUsers = async (req: Request, res: Response): Promise<void> => {
-  try{
-    const { roomId, text } = req.params;
+export const getDocumentUsers = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { roomId } = req.params;
 
-    if(!req.user){
+    const { text } = req.query;
+
+    if (!req.user) {
       res.status(400).send("user not found");
       return;
     }
     const room = await liveblocks.getRoom(roomId);
 
-    const users = Object.keys(room.usersAccesses).filter(email => email !== req.user.email);
+    const users = Object.keys(room.usersAccesses).filter(
+      (email) => email !== req.user.email
+    );
 
-    if(text.length){
-      const filteredUsers = users.filter((email) => email.toLowerCase().includes(text.toLowerCase()));
+    if (typeof text === "string" && text.trim().length > 0) {
+      const filteredUsers = users.filter((email) =>
+        email.toLowerCase().includes(text.toLowerCase())
+      );
 
-      res.status(200).json({message: "Users fetched successfully", roomUsers: filteredUsers});
+      res.status(200).json({
+        message: "Users fetched successfully",
+        roomUsers: filteredUsers,
+      });
       return;
     }
 
-    res.status(200).json({message: "Users fetched successfully", roomUsers: users});
+    res
+      .status(200)
+      .json({ message: "Users fetched successfully", roomUsers: users });
     return;
-  }catch(error){
-    res.status(500).json({message: "Error happened while getting doucment users" + error});
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error happened while getting doucment users" + error });
     return;
   }
-}
+};
+
+export const updateDocumentAccess = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { roomId, email, userType } = req.params;
+    const {updatedBy} = req.body;
+    const usersAccesses: RoomAccesses = {
+      [email]:
+        userType === "creator" || userType === "editor"
+          ? ["room:write"]
+          : ["room:read", "room:presence:write"],
+    };
+
+    const room = await liveblocks.updateRoom(roomId, { usersAccesses });
+
+    if (room) {
+      const notificationId = randomUUID();
+      await liveblocks.triggerInboxNotification({
+        userId: email,
+        kind: '$documentAccess',
+        subjectId: notificationId,
+        activityData:{
+          userType,
+          title: `You have been granted ${userType} access to the doucment by ${updatedBy.name}`,
+          updatedBy: updatedBy.name,
+          avatar: `${process.env.NEXT_PUBLIC_BASE_URL}${updatedBy.avatar.substring(
+            updatedBy.avatar.lastIndexOf("/") + 1
+          )}`,
+          email: updatedBy.email
+        },
+        roomId
+      })
+    }
+
+    res.status(200).json({
+      message: "Document access updated successfully",
+      room: room,
+    });
+    return;
+  } catch (error) {
+    res.status(500).json({
+      message: "Error happened while updating document access" + error,
+    });
+    return;
+  }
+};
+
+export const removeCollaborator = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { roomId, email } = req.params;
+
+    const room = await liveblocks.getRoom(roomId);
+
+    if (room.metadata.email === email) {
+      res.status(400).send("You cannot remove yourself from the document");
+    }
+
+    const updatedRoom = await liveblocks.updateRoom(roomId, {
+      usersAccesses: {
+        [email]: null,
+      },
+    });
+
+    res.status(200).json({
+      message: "Document access updated successfully",
+      room: updatedRoom,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error happened while removing collaborator" + error });
+    return;
+  }
+};

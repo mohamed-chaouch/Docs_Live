@@ -6,6 +6,8 @@ import {
   getDocument,
   getDocumentsByUserEmail,
   getDocumentUsers,
+  removeCollaborator,
+  updateDocumentAccess,
   updateDocumentTitle,
 } from "../controllers/documentController.js";
 
@@ -25,11 +27,14 @@ router.get(
 );
 
 router.get(
-  "/get-document-users/:roomId/:text",
+  "/get-document-users/:roomId",
   verifyToken,
   getDocumentUsers
 );
 
+router.put("/update-document-access/:roomId/:email/:userType", updateDocumentAccess)
+
+router.delete("/remove-collaborator/:roomId/:email",removeCollaborator);
 
 router.delete("/delete-document/:roomId", verifyToken, deleteDocument);
 
