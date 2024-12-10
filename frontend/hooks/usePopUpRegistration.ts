@@ -9,7 +9,7 @@ import { signUp } from "@/services/signUp";
 import { logIn } from "@/services/logIn";
 import { SignInSchema } from "@/Schema/SignInSchema";
 
-export function usePopUpRegistration() {
+export const usePopUpRegistration = () => {
   const {
     register: SignUpRegister,
     handleSubmit: handleSignUpSubmit,

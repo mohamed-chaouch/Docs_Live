@@ -26,7 +26,7 @@ const ThreadWrapper = ({ thread }: { thread: ThreadData<BaseMetadata> }) => {
 const Comments = () => {
   const { threads } = useThreads();
   return (
-    <div className="hidden lg:flex flex-col gap-y-0.5">
+    <div className="flex flex-col gap-y-0.5 w-full lg:w-[350px]">
       <Composer className="p-2 rounded-[10px]" />
       {threads.map((thread) => (
         <ThreadWrapper key={thread.id} thread={thread} />

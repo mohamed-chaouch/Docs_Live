@@ -13,15 +13,14 @@ import {
 } from "@/components/ui/tooltip";
 import {
   ExternalLink,
-  Eye,
   LogOut,
-  MessageSquare,
   SquarePen,
 } from "lucide-react";
 import useUserInfo from "@/hooks/useUserInfo";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import ActiveCollaborators from "./ActiveCollaborators";
+import Notifications from "./Notifications";
 
 interface INavBar {
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,6 +30,9 @@ interface INavBar {
   setTitle?: React.Dispatch<React.SetStateAction<string>>;
   currentUserType?: UserType;
   updateTitleHandler?: () => void;
+
+  // for sharing
+  setSharing?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const NavBar = ({
   setOpen,
@@ -40,6 +42,8 @@ const NavBar = ({
   setTitle,
   currentUserType,
   updateTitleHandler,
+  // for sharing,
+  setSharing,
 }: INavBar) => {
   const { user } = useUserInfo();
   const router = useRouter();
@@ -144,22 +148,10 @@ const NavBar = ({
 
         {isDoc && setTitle && currentUserType !== "editor" && (
           <div className="hidden md:flex items-center justify-center space-x-2">
-            <p className="text-xl font-bold text-black bg-transparent outline-none min-w-[160px] max-w-full md:max-w-[250px] text-right trancate">
+            <p className="text-xl font-bold text-black bg-transparent outline-none min-w-[160px] max-w-full md:max-w-[250px] text-right truncate">
               {title}
             </p>
-            <div
-              className={cn(
-                "flex items-center justify-center rounded-full w-10 h-10",
-                {
-                  hidden: removeIcon,
-                }
-              )}
-            >
-              <Eye
-                strokeWidth={3}
-                className="w-6 h-6 text-black cursor-pointer"
-              />
-            </div>
+            <p className="w-[54px] text-[10px] font-semibold bg-black/20 py-[2px] px-[4px]">View Only</p>
           </div>
         )}
 
@@ -179,7 +171,13 @@ const NavBar = ({
             <div className="flex items-center">
               {isDoc && (
                 <div className="flex items-center justify-center">
-                  <Button className="bg-orange-1 hover:bg-yellow-1 text-1 flex items-center justify-center text-white mr-4">
+                  <Button className="bg-orange-1 hover:bg-yellow-1 text-1 flex items-center justify-center text-white mr-4" onClick={()=>{
+                    if(setSharing){
+                      setSharing(true)
+                    }
+                  }}
+                  disabled={currentUserType !== "editor"}
+                  >
                     <ExternalLink className="w-8 h-8 text-white mr-1" />
                     Share
                   </Button>
@@ -188,22 +186,7 @@ const NavBar = ({
               )}
 
               {listDoc && (
-                <span
-                // onClick={handleNotifications}
-                >
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="cursor-pointer p-2 w-[40px] h-[100%] rounded-[50%] hover:bg-yellow-1 mr-2 md:mr-4">
-                          <MessageSquare className="w-6 h-6" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-yellow-1 border-0">
-                        <p>Notification</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </span>
+                <Notifications />
               )}
               <TooltipProvider>
                 <Tooltip>
@@ -281,22 +264,10 @@ const NavBar = ({
 
       {isDoc && setTitle && currentUserType !== "editor" && (
         <div className="flex md:hidden items-center justify-center my-4">
-          <p className="text-2xl font-bold text-black bg-transparent outline-none min-w-[100px] max-w-[180px] text-center trancate">
+          <p className="text-2xl font-bold text-black bg-transparent outline-none min-w-[75px] max-w-[180px] text-center truncate">
             {title}
           </p>
-          <div
-            className={cn(
-              "flex items-center justify-center rounded-full w-8 h-8",
-              {
-                hidden: removeIcon2,
-              }
-            )}
-          >
-            <Eye
-              strokeWidth={3}
-              className="w-6 h-6 text-black cursor-pointer"
-            />
-          </div>
+          <p className="w-[54px] text-[10px] bg-black/20 py-[2px] px-[4px]">View Only</p>
         </div>
       )}
     </>

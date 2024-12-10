@@ -10,9 +10,9 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { usePopUpRegistration } from "@/hooks/usePopUpRegistration";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
 import React from "react";
+import { usePopUpRegistration } from "@/hooks/usePopUpRegistration";
 
 const PopUpRegistration = ({
   isOpen,
