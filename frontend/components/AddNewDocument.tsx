@@ -34,7 +34,7 @@ const AddNewDocument = () => {
   };
   return (
     <div
-      className="flex flex-col items-center justify-center rounded-[20px] h-[130px] bg-gray-1 shadow-2xl cursor-pointer"
+      className="flex flex-col items-center justify-center rounded-[20px] h-[130px] bg-gray-1 shadow-2xl cursor-pointer hover:scale-[105]>"
       onClick={addDocumentHandler}
     >
       <div className="w-10 h-10 rounded-[50%] bg-orange-1 flex items-center justify-center">

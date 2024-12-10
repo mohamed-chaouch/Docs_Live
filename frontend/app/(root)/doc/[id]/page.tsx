@@ -8,6 +8,7 @@ import { useCookies } from "react-cookie";
 import api from "@/utils/axios";
 
 import { Room as LiveblocksRoom } from "@liveblocks/client";
+import { RoomAccesses } from '@liveblocks/node';
 interface Room extends LiveblocksRoom {
   metadata: RoomMetadata;
   usersAccesses: RoomAccesses;
@@ -82,8 +83,6 @@ const Document = ({ params: { id } }: { params: { id: string } }) => {
             ? "editor"
             : "viewer"
         );
-        // console.log(room.usersAccesses[user.email]?.includes("room:write"), "userAccesses")
-        // console.log(room.usersAccesses[user.email], "userAccesses2")
       };
 
       handleUsers();

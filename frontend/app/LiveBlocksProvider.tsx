@@ -30,8 +30,17 @@ const LiveBlocsProvider = ({ children }: { children: ReactNode }) => {
         );
         return response.data.users;
       }}
-      resolveMentionSuggestions={async ({ text, roomId })=> {
-        const response = await api.get(`document/get-document-users/${roomId}/${text}`)
+      resolveMentionSuggestions={async ({ roomId, text }) => {
+
+        const response = await api.get(
+          `document/get-document-users/${roomId}?text=${text}`,
+          {
+            headers: {
+              Authorization: `Bearer ${cookies.accessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         return response.data.roomUsers;
       }}

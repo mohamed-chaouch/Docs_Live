@@ -120,7 +120,7 @@ body {
 }
 
 .editor-container {
-  color: #000;
+  color: rgb(54, 53, 54);
   line-height: 20px;
   font-weight: 400;
   text-align: left;
@@ -560,7 +560,7 @@ i.h3 {
 }
 
 .lb-emoji-picker-content {
-  padding: 8px;
+  padding: 4px 0px;
 }
 
 .lb-emoji-picker-category-header {
@@ -570,9 +570,9 @@ i.h3 {
 }
 
 .lb-emoji-picker-grid {
-  height: 150px;
+  height: 200px;
   overflow: visible;
-  padding: 10px;
+  padding: 10px 20px;
 }
 
 .lb-emoji-picker-grid
@@ -592,7 +592,7 @@ i.h3 {
 .lb-thread-comments,
 .lb-composer,
 .lb-comment-reaction {
-  background-color: #331a01;
+  background-color: rgb(54, 53, 54);
   color: #fff;
 }
 
@@ -601,7 +601,7 @@ i.h3 {
 }
 
 .lb-button:where([data-variant="primary"]) {
-  background-color: rgb(123, 93, 10);
+  background-color: #5d623b;
   color: rgb(249, 228, 173);
   padding: 8px;
 }
@@ -634,11 +634,18 @@ i.h3 {
   border-bottom: none;
 }
 
-.lb-comment-body,
+.lb-comment-body{
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .lb-dropdown-item,
 .lb-dropdown-item-icon,
 .lb-composer-editor {
   color: #fff;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .lb-composer-action {
@@ -666,11 +673,12 @@ i.h3 {
 
 .data-liveblocks-portal {
   color: rgb(249, 228, 173) !important;
+
 }
 
 .lb-root:where(:not(.lb-root .lb-root)) {
   --lb-dynamic-background: #1b2840;
-  color: rgb(184, 1, 157);
+  color: rgb(136, 52, 255);
 }
 
 .lb-composer-editor :where([data-placeholder]) {
@@ -679,12 +687,17 @@ i.h3 {
   font-weight: 500;
 }
 
+.lb-comment-mention,
+.lb-composer-mention{
+  color: rgb(115, 115, 212);
+}
+
 .lb-lexical-floating-threads-thread:where([data-resolved]) {
   opacity: 40%;
 }
 
 .lb-elevation {
-  background: #331a01;
+  background: rgb(53, 57, 53);
   border-radius: 5px;
 }
 
@@ -731,12 +744,30 @@ i.h3 {
 
 .lb-dropdown-item:hover {
   border-radius: 5px;
-  background-color: rgb(84, 56, 4);
+  background-color: rgb(133, 125, 110);
 }
 
 /* [id^='radix-:'][id$=':'] {
   background-color: #000;
 } */
+
+.lb-lexical-floating-composer{
+  background-color: rgb(54, 53, 54);
+}
+
+.lb-lexical-mention-suggestion{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 4px;
+}
+
+.lb-composer-floating-availabe{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 4px;
+}
 
 .lb-attachment-preview-media{
   height: 200px;
@@ -768,5 +799,35 @@ i.h3 {
   padding: 2px 1px 1px 1px;
 }
 
+.lb-inbox-notification{
+  gap:8px
+}
 
+.lb-inbox-notification-avatar{
+  width:26px;
+}
 
+.lb-inbox-notification-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width:300px;
+}
+
+.lb-inbox-notification-title{
+  font-size: 14px;
+  font-weight: 500;
+  width:250px;
+}
+
+.lb-inbox-notification-date{
+  color: black !important;
+  font-size: 12px;
+}
+
+div[data-liveblocks-portal]{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 4px;
+}

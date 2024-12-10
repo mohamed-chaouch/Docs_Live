@@ -15,6 +15,8 @@ import { Room as LiveblocksRoom } from "@liveblocks/client";
 import React, { useState } from "react";
 import DeletePopUp from "./DeletePopUp";
 import { useDeleteDocument } from "@/hooks/useDeleteDocument";
+import useUserInfo from "@/hooks/useUserInfo";
+import { Button } from "./ui/button";
 interface Room extends LiveblocksRoom {
   metadata: RoomMetadata;
   usersAccesses: RoomAccesses;
@@ -27,17 +29,17 @@ const ListDocuments = ({
   page,
 }: {
   documents: Room[];
-  setDocuments: React.Dispatch<React.SetStateAction<Room[]>>
+  setDocuments: React.Dispatch<React.SetStateAction<Room[]>>;
   page: number;
 }) => {
   const router = useRouter();
+
+  const { user } = useUserInfo();
+
   const [documentId, setDocumentId] = useState("");
 
-  const {
-    deleteDocument,
-    setDeleteDocument,
-    handleDeleteDocument,
-  } = useDeleteDocument(documentId, setDocuments);
+  const { deleteDocument, setDeleteDocument, handleDeleteDocument } =
+    useDeleteDocument(documentId, setDocuments);
 
   return (
     <>
@@ -74,23 +76,28 @@ const ListDocuments = ({
               Created about {dateConverter(document.createdAt)}
             </h2>
             <div className="flex items-center justify-center mt-4 gap-x-2">
-              <div
-                className="flex items-center justify-center cursor-pointer w-9 h-9 p-2 rounded-full hover:bg-orange-1"
+              <Button
+                className="flex items-center justify-center cursor-pointer w-9 h-9 p-2 rounded-full bg-white hover:bg-orange-1 hover:scale-105"
                 onClick={() => {
                   router.push(`/doc/${document.id}`);
                 }}
               >
-                <Pencil className=" text-blue-500 hover:text-white" />
-              </div>
-              <div className="flex items-center justify-center cursor-pointer w-9 h-9 p-2 rounded-full hover:bg-orange-1">
+                <Pencil className=" text-blue-500" />
+              </Button>
+              <Button
+                className="flex items-center justify-center cursor-pointer w-9 h-9 p-2 rounded-full border-0 bg-white hover:bg-orange-1 hover:scale-110"
+                disabled={document.metadata.creatorId !== user?._id}
+              >
                 <Trash2
-                  className=" text-red-500 hover:text-white"
+                  className=" text-red-500"
                   onClick={() => {
-                    setDeleteDocument(true);
-                    setDocumentId(document.id);
+                    if(document.metadata.creatorId === user?._id){
+                      setDeleteDocument(true);
+                      setDocumentId(document.id);
+                    }
                   }}
                 />
-              </div>
+              </Button>
             </div>
           </div>
         ))}

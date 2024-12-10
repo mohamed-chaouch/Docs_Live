@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import api from "@/utils/axios";
 import DeletePopUp from "./DeletePopUp";
 import { useDeleteDocument } from "@/hooks/useDeleteDocument";
+import SharePopUp from "./SharePopUp";
 
 const CollaborativeRoom = ({
   roomId,
@@ -15,8 +16,15 @@ const CollaborativeRoom = ({
   users,
   currentUserType,
 }: CollaborativeRoomProps) => {
-
+  const [collaborators, setCollaborators] = useState<User[]>(users);
   const [title, setTitle] = useState(roomMetadata.title);
+
+  useEffect(()=>{
+    if(collaborators.length === 0){
+      setCollaborators(users);
+      console.log(collaborators, ": collaborators after setting")
+    }
+  },[users])
 
   const updateTitleHandler = async () => {
     try {
@@ -31,11 +39,10 @@ const CollaborativeRoom = ({
     }
   };
 
-  const {
-    deleteDocument,
-    setDeleteDocument,
-    handleDeleteDocument,
-  } = useDeleteDocument(roomId);
+  const { deleteDocument, setDeleteDocument, handleDeleteDocument } =
+    useDeleteDocument(roomId);
+
+  const [sharing, setSharing] = useState(false);
 
   return (
     <RoomProvider id={roomId}>
@@ -47,10 +54,13 @@ const CollaborativeRoom = ({
             setTitle={setTitle}
             currentUserType={currentUserType}
             updateTitleHandler={updateTitleHandler}
+            // for the sharing
+            setSharing={setSharing}
           />
           <Editor
             roomId={roomId}
             currentUserType={currentUserType}
+            roomMetadata={roomMetadata}
             setDeleteDocument={setDeleteDocument}
           />
         </div>
@@ -62,6 +72,20 @@ const CollaborativeRoom = ({
               setDeleteDocument(false);
             }}
             handleDeleteDocument={handleDeleteDocument}
+          />
+        )}
+
+        {sharing && (
+          <SharePopUp
+            isOpen={sharing}
+            onClose={() => {
+              setSharing(false);
+            }}
+            roomId={roomId}
+            collaborators={collaborators}
+            setCollaborators={setCollaborators}
+            creatorId={roomMetadata.creatorId}
+            currentUserType={currentUserType}
           />
         )}
       </ClientSideSuspense>

@@ -40,7 +40,6 @@ export const useAccessTokenRefresh = () => {
         sameSite: "lax",
       });
 
-      console.log("New access token set:", newAccessToken);
       return newAccessToken;
     } catch (error) {
       console.error("Error refreshing access token:", error);
@@ -68,7 +67,6 @@ export const useAccessTokenRefresh = () => {
 
       if (timeRemaining <= 5 * 60) {
         // Refresh if the token is expiring in 5 minutes
-        console.log("Token is about to expire. Refreshing...");
         await refreshAccessToken();
       }
     } catch (error) {
