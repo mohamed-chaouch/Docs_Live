@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "module": "esnext",
     "target": "es2020",
     "esModuleInterop": true,
@@ -9,6 +8,8 @@
     "strict": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
+    "incremental": false,
+    "tsBuildInfoFile": "tsconfig.tsbuildinfo",
     "isolatedModules": true,
     "noEmitOnError": true
   },
