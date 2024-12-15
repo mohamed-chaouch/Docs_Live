@@ -65,8 +65,6 @@ export const createUser = async (req, res) => {
             email: user.email,
             imageUrl: user.imageUrl,
         });
-        console.log(accessToken, ": access token");
-        console.log(refreshToken, ": refresh token");
         // Store accesstoken token in cookie
         // res.setHeader('Set-Cookie', serialize('accessToken', accessToken, {
         //     httpOnly: true,
@@ -124,8 +122,6 @@ export const loginUser = async (req, res) => {
             email: user.email,
             imageUrl: user.imageUrl,
         });
-        console.log(accessToken, ": access token");
-        console.log(refreshToken, ": refresh token");
         // Store accesstoken token in cookie
         // res.setHeader('Set-Cookie', serialize('accessToken', accessToken, {
         //     httpOnly: true,
@@ -161,7 +157,6 @@ export const loginUser = async (req, res) => {
         }
     }
     catch (error) {
-        console.error("Error in loginUser:", error);
         res.status(500).json({ message: "Server Error" });
     }
 };
@@ -223,7 +218,8 @@ export const getUsersByUserEmails = async (req, res) => {
             email: user.email,
             avatar: `${process.env.BASE_URL}${user.imageUrl}`,
         }));
-        res.status(200).json({ users: users });
+        const sortedUsers = userIds.map((email) => users.find((user) => user.email === email));
+        res.status(200).json({ users: sortedUsers });
         return;
     }
     catch (error) {
