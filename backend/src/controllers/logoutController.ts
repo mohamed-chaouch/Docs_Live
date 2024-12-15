@@ -26,6 +26,7 @@ export const handleLogout = async (req: Request, res: Response): Promise<void> =
     });
     if (!deleteRefreshToken) {
       res.status(404).json({ message: "Refresh Token not deleted" });
+      return;
     }
     console.log(deleteRefreshToken, " : deleteRefreshToken");
   } catch (error) {
@@ -37,8 +38,9 @@ export const handleLogout = async (req: Request, res: Response): Promise<void> =
   // Clear the refresh token cookie
   res.clearCookie("refreshToken", {
     httpOnly: true, // Protect against XSS attacks
-    sameSite: "none",
-    secure: Boolean(process.env.production),
+    secure: process.env.NODE_ENV === "production", // Only secure in production
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
   });
 
   res.sendStatus(204);

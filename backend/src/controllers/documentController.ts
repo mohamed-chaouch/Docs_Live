@@ -29,10 +29,7 @@ export const createDocument = async (
     const room = await liveblocks.createRoom(roomId, {
       metadata,
       usersAccesses,
-      defaultAccesses: ["room:write"],
-      //   groupsAccesses: {
-      //     "my-group-id": ["room:write"],
-      //   },
+      defaultAccesses: [],
     });
 
     res.status(200).json({
@@ -168,19 +165,17 @@ export const getDocumentUsers = async (
   try {
     const { roomId } = req.params;
 
-    const { text } = req.query;
+    const { text, email } = req.query;
 
-    if (!req.user) {
-      res.status(400).send("user not found");
-      return;
-    }
     const room = await liveblocks.getRoom(roomId);
 
+    console.log(room, ": room");
+
     const users = Object.keys(room.usersAccesses).filter(
-      (email) => email !== req.user.email
+      (usersAccessesEmail) => usersAccessesEmail !== email
     );
 
-    if (typeof text === "string" && text.trim().length > 0) {
+    if (typeof text === "string" && text.length > 0) {
       const filteredUsers = users.filter((email) =>
         email.toLowerCase().includes(text.toLowerCase())
       );
@@ -210,7 +205,7 @@ export const updateDocumentAccess = async (
 ): Promise<void> => {
   try {
     const { roomId, email, userType } = req.params;
-    const {updatedBy} = req.body;
+    const { updatedBy } = req.body;
     const usersAccesses: RoomAccesses = {
       [email]:
         userType === "creator" || userType === "editor"
@@ -220,24 +215,27 @@ export const updateDocumentAccess = async (
 
     const room = await liveblocks.updateRoom(roomId, { usersAccesses });
 
+
     if (room) {
       const notificationId = randomUUID();
+
+      console.log(updatedBy, ": updatedBy")
+
       await liveblocks.triggerInboxNotification({
         userId: email,
-        kind: '$documentAccess',
+        kind: "$documentAccess",
         subjectId: notificationId,
-        activityData:{
+        activityData: {
           userType,
-          title: `You have been granted ${userType} access to the doucment by ${updatedBy.name}`,
+          title: `You have been granted ${userType} access to the document by ${updatedBy.name}`,
           updatedBy: updatedBy.name,
-          avatar: `${process.env.NEXT_PUBLIC_BASE_URL}${updatedBy.avatar.substring(
-            updatedBy.avatar.lastIndexOf("/") + 1
-          )}`,
-          email: updatedBy.email
+          avatar: updatedBy.avatar,
+          email: updatedBy.email,
         },
-        roomId
-      })
+        roomId,
+      });
     }
+    
 
     res.status(200).json({
       message: "Document access updated successfully",

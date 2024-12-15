@@ -18,10 +18,7 @@ export const createDocument = async (req, res) => {
         const room = await liveblocks.createRoom(roomId, {
             metadata,
             usersAccesses,
-            defaultAccesses: ["room:write"],
-            //   groupsAccesses: {
-            //     "my-group-id": ["room:write"],
-            //   },
+            defaultAccesses: [],
         });
         res.status(200).json({
             message: "Room Created successfully",
@@ -123,14 +120,11 @@ export const deleteDocument = async (req, res) => {
 export const getDocumentUsers = async (req, res) => {
     try {
         const { roomId } = req.params;
-        const { text } = req.query;
-        if (!req.user) {
-            res.status(400).send("user not found");
-            return;
-        }
+        const { text, email } = req.query;
         const room = await liveblocks.getRoom(roomId);
-        const users = Object.keys(room.usersAccesses).filter((email) => email !== req.user.email);
-        if (typeof text === "string" && text.trim().length > 0) {
+        console.log(room, ": room");
+        const users = Object.keys(room.usersAccesses).filter((usersAccessesEmail) => usersAccessesEmail !== email);
+        if (typeof text === "string" && text.length > 0) {
             const filteredUsers = users.filter((email) => email.toLowerCase().includes(text.toLowerCase()));
             res.status(200).json({
                 message: "Users fetched successfully",
@@ -162,18 +156,19 @@ export const updateDocumentAccess = async (req, res) => {
         const room = await liveblocks.updateRoom(roomId, { usersAccesses });
         if (room) {
             const notificationId = randomUUID();
+            console.log(updatedBy, ": updatedBy");
             await liveblocks.triggerInboxNotification({
                 userId: email,
-                kind: '$documentAccess',
+                kind: "$documentAccess",
                 subjectId: notificationId,
                 activityData: {
                     userType,
-                    title: `You have been granted ${userType} access to the doucment by ${updatedBy.name}`,
+                    title: `You have been granted ${userType} access to the document by ${updatedBy.name}`,
                     updatedBy: updatedBy.name,
-                    avatar: `${process.env.NEXT_PUBLIC_BASE_URL}${updatedBy.avatar.substring(updatedBy.avatar.lastIndexOf("/") + 1)}`,
-                    email: updatedBy.email
+                    avatar: updatedBy.avatar,
+                    email: updatedBy.email,
                 },
-                roomId
+                roomId,
             });
         }
         res.status(200).json({

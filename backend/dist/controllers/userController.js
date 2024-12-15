@@ -221,7 +221,7 @@ export const getUsersByUserEmails = async (req, res) => {
             id: user._id,
             name: `${user.firstName} ${user.lastName}`,
             email: user.email,
-            avatar: user.imageUrl,
+            avatar: `${process.env.BASE_URL}${user.imageUrl}`,
         }));
         res.status(200).json({ users: users });
         return;
