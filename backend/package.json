@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc --skipLibCheck",
-    "predev": "npm run build && node --max-old-space-size=8192 ./node_modules/typescript/bin/tsc",
+    "predev": "npm run build",
     "dev": "node dist/index.js"
   },
   "author": "",
