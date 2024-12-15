@@ -87,9 +87,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       imageUrl: user.imageUrl,
     });
 
-    console.log(accessToken, ": access token");
-    console.log(refreshToken, ": refresh token");
-
     // Store accesstoken token in cookie
     // res.setHeader('Set-Cookie', serialize('accessToken', accessToken, {
     //     httpOnly: true,
@@ -156,9 +153,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       imageUrl: user.imageUrl,
     });
 
-    console.log(accessToken, ": access token");
-    console.log(refreshToken, ": refresh token");
-
     // Store accesstoken token in cookie
     // res.setHeader('Set-Cookie', serialize('accessToken', accessToken, {
     //     httpOnly: true,
@@ -199,7 +193,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       );
     }
   } catch (error) {
-    console.error("Error in loginUser:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
@@ -259,7 +252,7 @@ export const getUsersByUserEmails = async (req: Request, res: Response): Promise
 
     const data = await User.find({ email: {
       $in: userIds,
-    } })
+    } });
 
     const users = data.map((user) => ({
       id: user._id,
@@ -268,7 +261,9 @@ export const getUsersByUserEmails = async (req: Request, res: Response): Promise
       avatar: `${process.env.BASE_URL}${user.imageUrl}`,
     }))
 
-    res.status(200).json({ users: users });
+    const sortedUsers = userIds.map((email : string) => users.find((user) => user.email === email));
+
+    res.status(200).json({ users: sortedUsers });
     return;
   }catch(error){
     res.status(500).json({ message: "Failed when we try to getting the users", error });

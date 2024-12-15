@@ -169,8 +169,6 @@ export const getDocumentUsers = async (
 
     const room = await liveblocks.getRoom(roomId);
 
-    console.log(room, ": room");
-
     const users = Object.keys(room.usersAccesses).filter(
       (usersAccessesEmail) => usersAccessesEmail !== email
     );
@@ -218,8 +216,6 @@ export const updateDocumentAccess = async (
 
     if (room) {
       const notificationId = randomUUID();
-
-      console.log(updatedBy, ": updatedBy")
 
       await liveblocks.triggerInboxNotification({
         userId: email,

@@ -122,7 +122,6 @@ export const getDocumentUsers = async (req, res) => {
         const { roomId } = req.params;
         const { text, email } = req.query;
         const room = await liveblocks.getRoom(roomId);
-        console.log(room, ": room");
         const users = Object.keys(room.usersAccesses).filter((usersAccessesEmail) => usersAccessesEmail !== email);
         if (typeof text === "string" && text.length > 0) {
             const filteredUsers = users.filter((email) => email.toLowerCase().includes(text.toLowerCase()));
@@ -156,7 +155,6 @@ export const updateDocumentAccess = async (req, res) => {
         const room = await liveblocks.updateRoom(roomId, { usersAccesses });
         if (room) {
             const notificationId = randomUUID();
-            console.log(updatedBy, ": updatedBy");
             await liveblocks.triggerInboxNotification({
                 userId: email,
                 kind: "$documentAccess",
