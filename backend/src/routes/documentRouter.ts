@@ -28,7 +28,6 @@ router.get(
 
 router.get(
   "/get-document-users/:roomId",
-  verifyToken,
   getDocumentUsers
 );
 

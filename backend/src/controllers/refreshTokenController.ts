@@ -47,7 +47,6 @@ export const handleRefreshToken = async (req: Request, res: Response): Promise<v
         console.log("New accessToken generated:", accessToken);
 
         res.json({ accessToken });
-        return;
       }
     );
   } catch (error) {

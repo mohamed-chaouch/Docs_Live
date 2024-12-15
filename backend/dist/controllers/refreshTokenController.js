@@ -30,7 +30,6 @@ export const handleRefreshToken = async (req, res) => {
             );
             console.log("New accessToken generated:", accessToken);
             res.json({ accessToken });
-            return;
         });
     }
     catch (error) {
