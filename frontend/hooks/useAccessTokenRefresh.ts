@@ -50,7 +50,6 @@ export const useAccessTokenRefresh = () => {
     const accessToken = cookies.accessToken;
 
     if (!accessToken) {
-      console.log("No access token found.");
       return;
     }
 
