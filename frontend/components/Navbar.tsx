@@ -43,7 +43,7 @@ const NavBar = ({
 }: INavBar) => {
   const { user } = useUserInfo();
   const router = useRouter();
-  const [cookies, removeCookie] = useCookies(["accessToken"]);
+  const [cookies, , removeCookie] = useCookies(["accessToken"]);
   const logOut = async () => {
     await api.get("/logout", {
       headers: {

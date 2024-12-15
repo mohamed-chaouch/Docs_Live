@@ -98,13 +98,13 @@ const Document = ({ params: { id } }: { params: { id: string } }) => {
   }
 
   return (
-    <CollaborativeRoom
-      roomId={id}
-      roomMetadata={room.metadata}
-      users={users}
-      setUsers={setUsers}
-      currentUserType={currentUserType}
-    />
+      <CollaborativeRoom
+        roomId={id}
+        roomMetadata={room.metadata}
+        users={users}
+        setUsers={setUsers}
+        currentUserType={currentUserType}
+      />
   );
 };
 

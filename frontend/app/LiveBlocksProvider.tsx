@@ -24,10 +24,12 @@ const LiveBlocsProvider = ({ children }: { children: ReactNode }) => {
           router.push("/");
           return [];
         }
-        console.log(userIds, ": userIdsssss");
+
+        const uniqueUserIds = [...new Set(userIds)];
+
         const response = await api.post(
           "get-users",
-          { userIds: userIds },
+          { userIds: uniqueUserIds },
           {
             headers: {
               Authorization: `Bearer ${cookies.accessToken}`,
@@ -35,21 +37,27 @@ const LiveBlocsProvider = ({ children }: { children: ReactNode }) => {
             },
           }
         );
-        return response.data.users;
+
+        const users = response.data.users.map((user: User) => ({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+        }));
+
+        return users;
       }}
       resolveMentionSuggestions={async ({ text, roomId }) => {
         if (!cookies.accessToken || !user) {
           router.push("/");
         }
-
-        // Send the mention text with the correct user email
+      
         const response = await api.get(
           `document/get-document-users/${roomId}?text=${text}&email=${user.email!}`
         );
-
-        return response.data.roomUsers
-      }}
       
+        return response.data.roomUsers;
+      }}      
     >
       <ClientSideSuspense fallback={<Loader />}>{children}</ClientSideSuspense>
     </LiveblocksProvider>
