@@ -15,8 +15,8 @@ import { Room as LiveblocksRoom } from "@liveblocks/client";
 import React, { useState } from "react";
 import DeletePopUp from "./DeletePopUp";
 import { useDeleteDocument } from "@/hooks/useDeleteDocument";
-import useUserInfo from "@/hooks/useUserInfo";
 import { Button } from "./ui/button";
+import useUserInfo from "@/hooks/useUserInfo";
 interface Room extends LiveblocksRoom {
   metadata: RoomMetadata;
   usersAccesses: RoomAccesses;
@@ -33,7 +33,6 @@ const ListDocuments = ({
   page: number;
 }) => {
   const router = useRouter();
-
   const { user } = useUserInfo();
 
   const [documentId, setDocumentId] = useState("");
@@ -87,16 +86,12 @@ const ListDocuments = ({
               <Button
                 className="flex items-center justify-center cursor-pointer w-9 h-9 p-2 rounded-full border-0 bg-white hover:bg-orange-1 hover:scale-110"
                 disabled={document.metadata.creatorId !== user?._id}
+                onClick={() => {
+                  setDeleteDocument(true);
+                  setDocumentId(document.id);
+                }}
               >
-                <Trash2
-                  className=" text-red-500"
-                  onClick={() => {
-                    if(document.metadata.creatorId === user?._id){
-                      setDeleteDocument(true);
-                      setDocumentId(document.id);
-                    }
-                  }}
-                />
+                <Trash2 className=" text-red-500" />
               </Button>
             </div>
           </div>

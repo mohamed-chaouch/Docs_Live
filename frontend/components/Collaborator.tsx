@@ -7,7 +7,6 @@ import { Button } from "./ui/button";
 import api from "@/utils/axios";
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/navigation";
-import useUserInfo from "@/hooks/useUserInfo";
 
 const Collaborator = ({
   collaborator,
@@ -30,7 +29,7 @@ const Collaborator = ({
 
       const responseRoom = await api.put(
         `document/update-document-access/${roomId}/${email}/${userType}`,
-        {updatedBy: user}
+        { updatedBy: user }
       );
 
       handleUsers(responseRoom.data.room.usersAccesses);
@@ -65,14 +64,19 @@ const Collaborator = ({
     >
       <div className="flex items-center justify-center">
         <Image
-          src={`${process.env.NEXT_PUBLIC_BASE_URL}${collaborator.avatar}`}
+          src={`${collaborator.avatar}`}
           alt={collaborator.name}
           width={36}
           height={36}
           className="rounded-full mr-2"
         />
         <div className="flex flex-col items-start justify-center">
-          <p>{collaborator.name}</p>
+          <p className="flex items-center ">
+            {collaborator.name}
+            <span className="text-[10px] pl-2 text-black bg-black/10">
+              {loading && "updating..."}
+            </span>
+          </p>
           <p className="text-sm text-black/60">{collaborator.email}</p>
         </div>
       </div>

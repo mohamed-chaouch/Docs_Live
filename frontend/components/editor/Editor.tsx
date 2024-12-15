@@ -26,7 +26,6 @@ import {
 import Loader from "../Loader";
 import FloatingToolbarPlugin from "./plugins/FloatingToolbarPlugin";
 import { useThreads } from "@liveblocks/react/suspense";
-import { useEffect, useState } from "react";
 import Comments from "../Comments";
 import useUserInfo from "@/hooks/useUserInfo";
 // Catch any errors that occur during Lexical updates and log them
@@ -38,56 +37,19 @@ function Placeholder() {
 }
 
 export function Editor({
-  roomId,
   currentUserType,
   roomMetadata,
   setDeleteDocument,
 }: {
-  roomId: string;
   currentUserType: UserType;
   roomMetadata: RoomMetadata;
   setDeleteDocument: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { user } = useUserInfo();
-  const [avatarsReady, setAvatarsReady] = useState(false);
-
-  useEffect(() => {
-    // Check if avatars are already in the DOM
-    const checkAvatars = () => {
-      const avatarImages = document.querySelectorAll(".lb-avatar-image");
-
-      if (avatarImages.length > 0) {
-        setAvatarsReady(true); // Set to true when avatars are found
-        updateAvatars(avatarImages); // Update avatars immediately
-      }
-    };
-
-    const updateAvatars = (avatarImages: NodeListOf<Element>) => {
-      avatarImages.forEach((avatarImage) => {
-        if (avatarImage instanceof HTMLImageElement) {
-          const currentSrc = avatarImage.src;
-          const avatarName = currentSrc.substring(
-            currentSrc.lastIndexOf("/") + 1
-          );
-          avatarImage.src = `${process.env.NEXT_PUBLIC_BASE_URL}${avatarName}`;
-        }
-      });
-    };
-
-    // Check avatars once on component mount
-    checkAvatars();
-
-    // Set up an interval to keep checking periodically (in case avatars are added later)
-    const intervalId = setInterval(() => {
-      checkAvatars();
-    }, 500); // Check every 500ms
-
-    // Cleanup the interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []);
-
   const status = useEditorStatus();
   const { threads } = useThreads();
+  
+  const { user } = useUserInfo();
+
   const initialConfig = liveblocksConfig({
     namespace: "Editor",
     nodes: [HeadingNode],
@@ -102,7 +64,7 @@ export function Editor({
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className="editor-container size-full">
-        <div className="flex items-center justify-between border-[2px] border-black m-[10px] md:my[10px] md:mx-16 px-2 rounded-[10px]">
+        <div className="flex items-center justify-between border-[2px] border-black mx-3 md:mx-16 px-2 rounded-[10px]">
           <ToolbarPlugin />
           <div className="border-[0.5px] border-gray-1 h-[60px] mr-2 flex sm:hidden"></div>
           {roomMetadata.creatorId === user?._id && (
@@ -134,7 +96,7 @@ export function Editor({
           {status === "not-loaded" || status === "loading" ? (
             <Loader />
           ) : (
-            <div className="editor-inner w-full lg:max-w-2/3 h-fit min-h-[calc(100vh-225px)] sm:min-h-[calc(100vh-130px)] rounded-[10px] mb-4 lg:mb-0">
+            <div className="editor-inner w-full lg:max-w-2/3 h-fit min-h-[calc(100vh-225px)] sm:min-h-[calc(100vh-137px)] rounded-[10px] mb-4 lg:mb-0">
               <RichTextPlugin
                 contentEditable={
                   <ContentEditable className="editor-input h-full" />
@@ -148,16 +110,14 @@ export function Editor({
             </div>
           )}
 
-          <div className="">
-            <LiveblocksPlugin>
-              <FloatingComposer className="w-[350px] p-2 rounded-[10px]" />
-              <FloatingThreads
-                threads={threads}
-                className="w-[350px] p-2 rounded-[10px]"
-              />
-              <Comments />
-            </LiveblocksPlugin>
-          </div>
+          <LiveblocksPlugin>
+            <FloatingComposer className="w-[350px] p-2 rounded-[10px]" />
+            <FloatingThreads
+              threads={threads}
+              className="w-[350px] p-2 rounded-[10px]"
+            />
+            <Comments />
+          </LiveblocksPlugin>
         </div>
       </div>
     </LexicalComposer>

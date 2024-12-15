@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -28,43 +28,6 @@ const Notifications = () => {
   const unreadNotifications = inboxNotifications.filter(
     (notifcation) => !notifcation.readAt
   );
-
-  const [avatarsReady, setAvatarsReady] = useState(false);
-
-  useEffect(() => {
-    // Check if avatars are already in the DOM
-    const checkAvatars = () => {
-      const avatarImages = document.querySelectorAll(".lb-avatar-image");
-
-      if (avatarImages.length > 0) {
-        setAvatarsReady(true); // Set to true when avatars are found
-        updateAvatars(avatarImages); // Update avatars immediately
-      }
-    };
-
-    const updateAvatars = (avatarImages: NodeListOf<Element>) => {
-      avatarImages.forEach((avatarImage) => {
-        if (avatarImage instanceof HTMLImageElement) {
-          const currentSrc = avatarImage.src;
-          const avatarName = currentSrc.substring(
-            currentSrc.lastIndexOf("/") + 1
-          );
-          avatarImage.src = `${process.env.NEXT_PUBLIC_BASE_URL}${avatarName}`;
-        }
-      });
-    };
-
-    // Check avatars once on component mount
-    checkAvatars();
-
-    // Set up an interval to keep checking periodically (in case avatars are added later)
-    const intervalId = setInterval(() => {
-      checkAvatars();
-    }, 500); // Check every 500ms
-
-    // Cleanup the interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []);
 
   return (
     <Popover>
@@ -135,10 +98,8 @@ const Notifications = () => {
                           <InboxNotification.Icon className="bg-transparent">
                             <Image
                               src={
-                                `${process.env.NEXT_PUBLIC_BASE_URL}${(
-                                  props.inboxNotification.activities[0].data
-                                    .avatar as string
-                                )}` || ""
+                                (props.inboxNotification.activities[0].data
+                                  .avatar as string) || ""
                               }
                               alt="avatar"
                               width={36}

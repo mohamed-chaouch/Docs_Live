@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import api from "@/utils/axios"; // Your axios setup
+import api from "@/utils/axios";
 
 export const useAccessTokenRefresh = () => {
   const [cookies, setCookie] = useCookies(["accessToken", "refreshToken"]);
@@ -24,20 +24,19 @@ export const useAccessTokenRefresh = () => {
         return null;
       }
 
-      const response = await api.post(
-        "/refresh-token",
-        { refreshToken : refreshToken });
+      const response = await api.post("/refresh-token", {
+        refreshToken: refreshToken,
+      });
 
-      // Assuming you get the new access token from your API
       const newAccessToken = response.data.accessToken;
       const expiresAccessToken = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes expiration
 
       setCookie("accessToken", newAccessToken, {
-        path: "/",
         expires: expiresAccessToken,
         httpOnly: false,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production", // Only secure in production
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        path: "/",
       });
 
       return newAccessToken;

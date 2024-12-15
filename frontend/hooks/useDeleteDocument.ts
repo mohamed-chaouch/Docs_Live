@@ -41,7 +41,9 @@ export const useDeleteDocument = (
 
   const handleDeleteDocument = async () => {
     try {
-      if (!cookies.accessToken) return router.push("/");
+      if (!cookies.accessToken){
+        router.push("/");
+      } 
       await api.delete(`document/delete-document/${roomId}`, {
         headers: {
           Authorization: `Bearer ${cookies.accessToken}`,

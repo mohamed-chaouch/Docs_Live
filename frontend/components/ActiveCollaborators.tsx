@@ -14,7 +14,6 @@ const ActiveCollaborators = () => {
 
   const collaborators = others.map((other) => other.info);
 
-  console.log(collaborators, ": collaborators")
   return (
     <ul className="hidden sm:flex items-center justify-start -space-x-3 overflow-hidden mr-2 md:mr-4">
     {collaborators.map((collaborator, index) => (
@@ -27,7 +26,7 @@ const ActiveCollaborators = () => {
             <TooltipTrigger asChild>
               <div className="cursor-pointer rounded-full p-1 z-20">
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_BASE_URL}${collaborator.avatar}`}
+                  src={`${collaborator.avatar}`}
                   alt={collaborator.name}
                   width={26}
                   height={26}

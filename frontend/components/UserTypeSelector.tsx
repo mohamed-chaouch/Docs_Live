@@ -15,18 +15,24 @@ const UserTypeSelector = ({
   onHandleClick,
   className,
 }: UserTypeSelectorProps) => {
-
   const accessChangeHandler = (type: UserType) => {
     setUserType(type);
-    onHandleClick && onHandleClick(type);
+    if (onHandleClick) {
+      onHandleClick(type);
+    }
   };
-  
+
   return (
     <Select
       value={userType}
       onValueChange={(type: UserType) => accessChangeHandler(type)}
     >
-      <SelectTrigger className={cn("cursor-pointer bg-gray-1 w-[100px] !border-0 !outline-none shadow-none appearance-none absolute top-0 right-0 focus:ring-0 focus:ring-offset-0", className)}>
+      <SelectTrigger
+        className={cn(
+          "cursor-pointer bg-gray-1 w-[100px] !border-0 !outline-none shadow-none appearance-none absolute top-0 right-0 focus:ring-0 focus:ring-offset-0",
+          className
+        )}
+      >
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

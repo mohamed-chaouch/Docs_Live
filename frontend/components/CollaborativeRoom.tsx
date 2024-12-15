@@ -4,7 +4,7 @@ import { ClientSideSuspense, RoomProvider } from "@liveblocks/react";
 import Loader from "./Loader";
 import { Editor } from "./editor/Editor";
 import NavBar from "./Navbar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "@/utils/axios";
 import DeletePopUp from "./DeletePopUp";
 import { useDeleteDocument } from "@/hooks/useDeleteDocument";
@@ -14,17 +14,10 @@ const CollaborativeRoom = ({
   roomId,
   roomMetadata,
   users,
+  setUsers,
   currentUserType,
 }: CollaborativeRoomProps) => {
-  const [collaborators, setCollaborators] = useState<User[]>(users);
   const [title, setTitle] = useState(roomMetadata.title);
-
-  useEffect(()=>{
-    if(collaborators.length === 0){
-      setCollaborators(users);
-      console.log(collaborators, ": collaborators after setting")
-    }
-  },[users])
 
   const updateTitleHandler = async () => {
     try {
@@ -58,7 +51,6 @@ const CollaborativeRoom = ({
             setSharing={setSharing}
           />
           <Editor
-            roomId={roomId}
             currentUserType={currentUserType}
             roomMetadata={roomMetadata}
             setDeleteDocument={setDeleteDocument}
@@ -82,10 +74,9 @@ const CollaborativeRoom = ({
               setSharing(false);
             }}
             roomId={roomId}
-            collaborators={collaborators}
-            setCollaborators={setCollaborators}
+            collaborators={users}
+            setCollaborators={setUsers}
             creatorId={roomMetadata.creatorId}
-            currentUserType={currentUserType}
           />
         )}
       </ClientSideSuspense>

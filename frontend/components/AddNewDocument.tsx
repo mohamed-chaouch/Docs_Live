@@ -28,9 +28,7 @@ const AddNewDocument = () => {
       }
     );
 
-    if(response.data.data){
-      router.push(`/doc/${response.data.data.id}`);
-    }
+    router.push(`/doc/${response.data.data.id}`);
   };
   return (
     <div
