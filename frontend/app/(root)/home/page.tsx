@@ -87,7 +87,7 @@ const Home = () => {
     };
 
     handleDocuments();
-  }, [page, cookies.accessToken, user, limitPages]);
+  }, [page, cookies?.accessToken, user, limitPages]);
 
   const [filteredDocuments, setFilteredDocuments] = useState<Room[]>([]);
 
@@ -106,7 +106,6 @@ const Home = () => {
     }
   }, [debouncedQuery, documents]);
 
-  console.log(documents,": documentssssssss")
   // Include an "Add Document" card on the first page
   const displayedDocuments =
     page === 1 ? [<AddNewDocument key="add-card" />] : [];

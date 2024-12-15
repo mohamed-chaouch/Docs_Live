@@ -11,11 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  ExternalLink,
-  LogOut,
-  SquarePen,
-} from "lucide-react";
+import { ExternalLink, LogOut, SquarePen } from "lucide-react";
 import useUserInfo from "@/hooks/useUserInfo";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -55,10 +51,11 @@ const NavBar = ({
         "Content-Type": "application/json",
       },
     });
-
+    
     // Remove the accessToken cookie
     // the path is / because i put in the cookies the path equal to /
     removeCookie("accessToken", { path: "/" });
+    removeCookie("accessToken", { path: "/doc" });
 
     router.push("/");
   };
@@ -114,7 +111,8 @@ const NavBar = ({
               ref={inputRef}
               type="text"
               value={title}
-              className="text-xl font-bold text-black bg-transparent outline-none min-w-[160px] max-w-full md:max-w-[250px] text-right"
+              className="text-xl font-bold text-black bg-transparent outline-none w-fit text-center"
+              style={{ width: `${Math.min(Math.max(title!.length * 10, 90), 250)}px` }}
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
@@ -148,10 +146,12 @@ const NavBar = ({
 
         {isDoc && setTitle && currentUserType !== "editor" && (
           <div className="hidden md:flex items-center justify-center space-x-2">
-            <p className="text-xl font-bold text-black bg-transparent outline-none min-w-[160px] max-w-full md:max-w-[250px] text-right truncate">
+            <p className="text-xl font-bold text-black bg-transparent outline-none w-fit text-center truncate" style={{ width: `${Math.min(Math.max(title!.length * 10, 90), 250)}px` }}>
               {title}
             </p>
-            <p className="w-[54px] text-[10px] font-semibold bg-black/20 py-[2px] px-[4px]">View Only</p>
+            <p className="w-[54px] text-[10px] font-semibold bg-black/20 py-[2px] px-[4px]">
+              View Only
+            </p>
           </div>
         )}
 
@@ -170,13 +170,15 @@ const NavBar = ({
           {user && (
             <div className="flex items-center">
               {isDoc && (
-                <div className="flex items-center justify-center">
-                  <Button className="bg-orange-1 hover:bg-yellow-1 text-1 flex items-center justify-center text-white mr-4" onClick={()=>{
-                    if(setSharing){
-                      setSharing(true)
-                    }
-                  }}
-                  disabled={currentUserType !== "editor"}
+                <div className="flex items-center justify-center mr-4 sm:mr-0">
+                  <Button
+                    className="bg-orange-1 hover:bg-yellow-1 text-1 flex items-center justify-center text-white"
+                    onClick={() => {
+                      if (setSharing) {
+                        setSharing(true);
+                      }
+                    }}
+                    disabled={currentUserType !== "editor"}
                   >
                     <ExternalLink className="w-8 h-8 text-white mr-1" />
                     Share
@@ -185,52 +187,55 @@ const NavBar = ({
                 </div>
               )}
 
-              {listDoc && (
-                <Notifications />
+              {listDoc && <Notifications />}
+              {(isDoc || listDoc) && (
+                <>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="cursor-pointer rounded-[50%] border-[2px] border-black hover:border-yellow-1">
+                          <Image
+                            src={`${process.env.NEXT_PUBLIC_BASE_URL}${user.imageUrl}`}
+                            alt="avatar"
+                            width={36}
+                            height={36}
+                            className="rounded-[50%]"
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-yellow-1 border-0">
+                        <p>{user.firstName + " " + user.lastName}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <span onClick={logOut}>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="cursor-pointer p-2 w-[40px] h-[100%] rounded-[50%] hover:bg-yellow-1 ml-2 md:ml-4">
+                            <LogOut className="w-6 h-6" />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-yellow-1 border-0">
+                          <p>Logout</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </span>
+                </>
               )}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="cursor-pointer rounded-[50%] border-[2px] border-black hover:border-yellow-1">
-                      <Image
-                        src={`${process.env.NEXT_PUBLIC_BASE_URL}${user.imageUrl}`}
-                        alt="avatar"
-                        width={36}
-                        height={36}
-                        className="rounded-[50%]"
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-yellow-1 border-0">
-                    <p>{user.firstName + " " + user.lastName}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <span onClick={logOut}>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="cursor-pointer p-2 w-[40px] h-[100%] rounded-[50%] hover:bg-yellow-1 ml-2 md:ml-4">
-                        <LogOut className="w-6 h-6" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-yellow-1 border-0">
-                      <p>Logout</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </span>
             </div>
           )}
         </div>
       </div>
       {isDoc && setTitle && currentUserType === "editor" && (
-        <div className="flex md:hidden items-center justify-center my-4">
+        <div className="flex md:hidden items-center justify-center space-x-2 my-4">
           <input
             ref={inputRef2}
             type="text"
             value={title}
-            className="text-2xl font-bold text-black bg-transparent outline-none min-w-[100px] max-w-[180px] text-center"
+            className="text-2xl font-bold text-black bg-transparent outline-none w-fit text-center"
+            style={{ width: `${Math.min(Math.max(title!.length * 10, 90), 250)}px` }}
             onChange={(e) => {
               setTitle(e.target.value);
             }}
@@ -264,10 +269,12 @@ const NavBar = ({
 
       {isDoc && setTitle && currentUserType !== "editor" && (
         <div className="flex md:hidden items-center justify-center my-4">
-          <p className="text-2xl font-bold text-black bg-transparent outline-none min-w-[75px] max-w-[180px] text-center truncate">
+          <p className="text-2xl font-bold text-black bg-transparent outline-none w-fit text-center truncate"  style={{ width: `${Math.min(Math.max(title!.length * 10, 90), 250)}px` }}>
             {title}
           </p>
-          <p className="w-[54px] text-[10px] bg-black/20 py-[2px] px-[4px]">View Only</p>
+          <p className="w-[54px] text-[10px] bg-black/20 py-[2px] px-[4px]">
+            View Only
+          </p>
         </div>
       )}
     </>

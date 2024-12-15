@@ -6,6 +6,35 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Light mode default scrollbar colors */
+:root {
+  --scrollbar: #444; /* Scrollbar color */
+  --scrollbar-thumb: #777; /* Scrollbar thumb color */
+  --scrollbar-track: #333; /* Scrollbar track color */
+}
+
+/* Customize the scrollbar */
+.scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); /* Light background */
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5); /* Darker thumb */
+  border-radius: 10px;
+  border: 2px solid transparent; /* Padding around scrollbar */
+  background-clip: content-box;
+}
+
+/* Scrollbar styling for Firefox */
+.scroll-container {
+  scrollbar-width: thin; /* Narrow scrollbar */
+  scrollbar-color: rgba(0, 0, 0, 0.5) rgba(255, 255, 255, 0.1); /* Thumb color, track color */
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -662,13 +691,19 @@ i.h3 {
 
 .lb-comment-date,
 .lb-lexical-mention-suggestion-user,
-.lb-composer-suggestions-list-item,
 .lb-inbox-notification-date,
 .lb-comment-author,
 .lb-emoji-picker-search-icon,
 .lb-emoji-picker-category-header-title,
 .lb-emoji-picker-search::placeholder {
   color: rgb(249, 228, 173);
+}
+
+.lb-composer-suggestions-list-item{
+  color: rgb(249, 228, 173);
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
 }
 
 .data-liveblocks-portal {
@@ -824,10 +859,10 @@ i.h3 {
   color: black !important;
   font-size: 12px;
 }
-
+/* 
 div[data-liveblocks-portal]{
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2px 4px;
-}
+} */

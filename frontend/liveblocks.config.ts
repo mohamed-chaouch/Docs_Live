@@ -1,4 +1,3 @@
-import { getUserColor } from './lib/userColor';
 // Define Liveblocks types for your application
 // https://liveblocks.io/docs/api-reference/liveblocks-react#Typing-your-data
 declare global {

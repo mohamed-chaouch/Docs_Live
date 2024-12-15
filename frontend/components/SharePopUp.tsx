@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -24,9 +24,7 @@ const SharePopUp = ({
   collaborators,
   setCollaborators,
   creatorId,
-  currentUserType,
 }: SharePopUpProps) => {
-    // const user as userSelf = useSelf();
     const userSelf = useSelf();
 
   const [loading, setLoading] = useState(false);

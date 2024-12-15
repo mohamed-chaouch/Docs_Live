@@ -3,12 +3,13 @@
 import CollaborativeRoom from "@/components/CollaborativeRoom";
 import useUserInfo from "@/hooks/useUserInfo";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import api from "@/utils/axios";
 
 import { Room as LiveblocksRoom } from "@liveblocks/client";
-import { RoomAccesses } from '@liveblocks/node';
+import { RoomAccesses } from "@liveblocks/node";
+import Loader from "@/components/Loader";
 interface Room extends LiveblocksRoom {
   metadata: RoomMetadata;
   usersAccesses: RoomAccesses;
@@ -21,88 +22,89 @@ const Document = ({ params: { id } }: { params: { id: string } }) => {
   const { user } = useUserInfo();
 
   const [room, setRoom] = useState<Room | null>(null);
-  const [users, setUsers] = useState([]);
-
-  // Redirect if user is not logged in
-  useEffect(() => {
-    if (!user || !cookies.accessToken) {
-      router.push("/");
-    }
-  }, [user, cookies.accessToken]);
+  const [users, setUsers] = useState<User[]>([]);
 
   // Fetch room data
-  useEffect(() => {
-    if (id && user?.email) {
-      const handleDocument = async () => {
-        const response = await api.get(
-          `document/get-document/${user.email}/${id}`
-        );
-        setRoom(response.data.data);
+  const fetchDocument = useCallback(async () => {
+    if (!id || !user?.email) return;
 
-        if (!response.data.data) {
-          router.push("/");
-        }
-      };
+    try {
+      const response = await api.get(
+        `document/get-document/${user.email}/${id}`
+      );
+      const fetchedRoom = response.data.data;
 
-      handleDocument();
+      if (!fetchedRoom) {
+        router.push("/");
+        return;
+      }
+
+      setRoom(fetchedRoom);
+    } catch (error) {
+      console.error("Error fetching document:", error);
     }
   }, [id, user?.email]);
 
   const [currentUserType, setCurrentUserType] = useState<UserType>("viewer");
 
   // Fetch user data
-  useEffect(() => {
-    if (room && cookies.accessToken && user) {
+  const fetchUsers = useCallback(async () => {
+    if (!room || !cookies?.accessToken || !user) return;
+
+    try {
       const userIds = Object.keys(room.usersAccesses);
+      const response = await api.post(
+        "get-users",
+        { userIds },
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const handleUsers = async () => {
-        const response = await api.post(
-          "get-users",
-          { userIds },
-          {
-            headers: {
-              Authorization: `Bearer ${cookies.accessToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+      const usersData = response.data.users.map((user: User) => ({
+        ...user,
+        userType: (room.usersAccesses[user.email] as string[])?.includes(
+          "room:write"
+        )
+          ? "editor"
+          : "viewer",
+      }));
 
-        const usersData = response.data.users.map((user: User) => ({
-          ...user,
-          userType: (room.usersAccesses[user.email] as string[])?.includes(
-            "room:write"
-          )
-            ? "editor"
-            : "viewer",
-        }));
-
-        setUsers(usersData);
-
-        setCurrentUserType(
-          (room.usersAccesses[user.email] as string[]).includes("room:write")
-            ? "editor"
-            : "viewer"
-        );
-      };
-
-      handleUsers();
+      setUsers(usersData);
+      setCurrentUserType(
+        (room.usersAccesses[user.email] as string[]).includes("room:write")
+          ? "editor"
+          : "viewer"
+      );
+    } catch (error) {
+      console.error("Error fetching users:", error);
     }
-  }, [room, cookies.accessToken, user]);
+  }, [room, cookies?.accessToken, user]);
+
+  useEffect(() => {
+    fetchDocument();
+  }, [fetchDocument]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   // Ensure room data is loaded
   if (!room) {
-    return null; // Render nothing while loading
+    return <Loader />;
   }
 
   return (
-    <div>
-      <CollaborativeRoom
-        roomId={id}
-        roomMetadata={room.metadata}
-        users={users}
-        currentUserType={currentUserType}
-      />
-    </div>
+    <CollaborativeRoom
+      roomId={id}
+      roomMetadata={room.metadata}
+      users={users}
+      setUsers={setUsers}
+      currentUserType={currentUserType}
+    />
   );
 };
 

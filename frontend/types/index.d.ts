@@ -27,6 +27,7 @@ declare type CollaborativeRoomProps = {
   roomId: string;
   roomMetadata: RoomMetadata;
   users: User[];
+  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
   currentUserType: UserType;
 };
 
@@ -49,7 +50,6 @@ declare type SharePopUpProps = {
   collaborators: User[];
   setCollaborators: React.Dispatch<React.SetStateAction<User[]>>
   creatorId: string;
-  currentUserType: string;
 };
 
 declare type UserTypeSelectorProps = {
@@ -67,3 +67,5 @@ declare type CollaboratorProps = {
   handleUsers: (value: RoomAccesses) => void;
   user: User;
 };
+
+declare type ThreadWrapperProps = { thread: ThreadData<BaseMetadata> };

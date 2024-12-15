@@ -6,7 +6,6 @@ import { redirect } from "next/navigation";
 export async function POST() {
   // Get the current user from your database
   const { user } = await getUserInfo();
-
   if (!user) redirect("/");
 
   const liveBlocksUser = {
@@ -15,7 +14,7 @@ export async function POST() {
         id: user._id,
         name: `${user.firstName} ${user.lastName}`,
         email: user.email,
-        avatar: user.imageUrl,
+        avatar: `${process.env.NEXT_PUBLIC_BASE_URL}${user.imageUrl}`,
         color: getUserColor(user._id)
     }
   };

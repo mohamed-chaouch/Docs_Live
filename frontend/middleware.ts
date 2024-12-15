@@ -7,6 +7,7 @@ const key = new TextEncoder().encode(secretKey);
 
 const validPaths = ["/", "/home", "/doc"];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function decrypt(token: string): Promise<any> {
   try {
     const { payload } = await jwtVerify(token, key, { algorithms: ["HS256"] });
@@ -19,7 +20,6 @@ export async function decrypt(token: string): Promise<any> {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
   // Bypass middleware for image requests in the public folder
   if (pathname.match(/\.(png|jpg|jpeg|gif|svg)$/)) {
     return NextResponse.next();
@@ -32,6 +32,7 @@ export async function middleware(request: NextRequest) {
 
   try {
     const accessToken = request.cookies.get("accessToken")?.value;
+
     const session = accessToken ? await decrypt(accessToken) : null;
 
     if (!session) {
@@ -44,20 +45,16 @@ export async function middleware(request: NextRequest) {
 
     const protectedRoutes = ["/home"];
 
-    // Check for protected dynamic paths like /transformations/[id]
+    // Check for protected dynamic paths like /doc/[id]
     if (
-      (protectedRoutes.includes(pathname) ||
-        pathname.startsWith("/doc/")) &&
+      (protectedRoutes.includes(pathname) || pathname.startsWith("/doc/")) &&
       !session?._id
     ) {
       return NextResponse.redirect(new URL("/", request.url));
     }
 
     // Handle invalid paths not in validPaths or matching /doc/
-    if (
-      !validPaths.includes(pathname) &&
-      !pathname.startsWith("/doc/")
-    ) {
+    if (!validPaths.includes(pathname) && !pathname.startsWith("/doc/")) {
       return NextResponse.redirect(
         session?._id ? new URL("/home", request.url) : new URL("/", request.url)
       );
