@@ -1,12 +1,11 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
   "type": "module",
   "scripts": {
     "build": "tsc --skipLibCheck",
     "predev": "npm run build && node --max-old-space-size=8192 ./node_modules/typescript/bin/tsc",
-    "dev": "concurrently \"tsc -w\" \"nodemon dist/index.js\""
+    "dev": "node dist/index.js"
   },
   "author": "",
   "license": "ISC",
