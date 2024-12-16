@@ -4,8 +4,10 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
+import { verifyToken } from "./utils/verifyToken.js";
 import cookieParser from "cookie-parser";
 import { handleRefreshToken } from "./controllers/refreshTokenController.js";
+import { handleLogout } from "./controllers/logoutController.js";
 // routers
 import userRouter from "./routes/userRouter.js";
 import documentRouter from "./routes/documentRouter.js";
@@ -36,10 +38,8 @@ app.post("/refresh-token", handleRefreshToken);
 const uploadsPath = path.join(__dirname, process.env.UPLOADS_PATH);
 app.use("/", express.static(uploadsPath));
 // app.use(verifyToken); // using the verifyToken for all the requests under this line
-// app.get("/logout", verifyToken, handleLogout);
-// const port = process.env.PORT || 4000;
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${process.env.PORT}`);
-// });
-// Export app for serverless compatibility
-export default app;
+app.get("/logout", verifyToken, handleLogout);
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+    console.log(`Server is running on port ${process.env.PORT}`);
+});

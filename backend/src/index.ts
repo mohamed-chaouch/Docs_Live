@@ -59,13 +59,10 @@ app.use("/", express.static(uploadsPath));
 
 
 // app.use(verifyToken); // using the verifyToken for all the requests under this line
+app.get("/logout", verifyToken, handleLogout);
 
-// app.get("/logout", verifyToken, handleLogout);
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
+});
 
-// const port = process.env.PORT || 4000;
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${process.env.PORT}`);
-// });
-
-// Export app for serverless compatibility
-export default app;
