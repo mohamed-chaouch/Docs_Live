@@ -32,5 +32,11 @@
     "@types/node": "^22.10.0",
     "concurrently": "^9.1.0",
     "typescript": "^5.7.2"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "engines": {
+    "node": "18.x"
   }
 }
