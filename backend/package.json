@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc --skipLibCheck",
     "predev": "npm run build",
-    "dev": "PORT=3000 node dist/index.js"
+    "dev": "PORT=4000 node dist/index.js"
   },
   "author": "",
   "license": "ISC",

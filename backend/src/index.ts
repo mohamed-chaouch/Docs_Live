@@ -19,6 +19,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import "./config/connect.js";
+import { createServer } from "http";
 
 dotenv.config();
 
@@ -61,7 +62,10 @@ app.use("/", express.static(uploadsPath));
 // app.use(verifyToken); // using the verifyToken for all the requests under this line
 app.get("/logout", verifyToken, handleLogout);
 
+const server = createServer(app); 
 const port = process.env.PORT || 4000;
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
 });
+
+export default server; // Make sure the server is exported for Vercel
