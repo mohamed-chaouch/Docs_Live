@@ -3,7 +3,7 @@
 const nextConfig = {
   /* config options here */
   images: {
-    domains: ["localhost"], // Add 'localhost' as an allowed domain
+    domains: ["localhost", "docs-live-backend.vercel.app"], // Add 'localhost' as an allowed domain
   },
 };
 
