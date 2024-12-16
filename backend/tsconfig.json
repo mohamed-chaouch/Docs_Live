@@ -8,11 +8,8 @@
     "strict": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "incremental": false,
-    "tsBuildInfoFile": "tsconfig.tsbuildinfo",
-    "isolatedModules": true,
-    "noEmitOnError": true
+    "isolatedModules": true
   },
-"include": ["src/**/*.ts", "types.d.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "src/uploads"]
 }
