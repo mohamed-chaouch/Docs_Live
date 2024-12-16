@@ -112,7 +112,7 @@ const NavBar = ({
               type="text"
               value={title}
               className="text-xl font-bold text-black bg-transparent outline-none w-fit text-center"
-              style={{ width: `${Math.min(Math.max(title!.length * 10, 90), 250)}px` }}
+              style={{ width: `${Math.min(Math.max(title!.length * 10, 100), 250)}px` }}
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
@@ -146,7 +146,7 @@ const NavBar = ({
 
         {isDoc && setTitle && currentUserType !== "editor" && (
           <div className="hidden md:flex items-center justify-center space-x-2">
-            <p className="text-xl font-bold text-black bg-transparent outline-none w-fit text-center truncate" style={{ width: `${Math.min(Math.max(title!.length * 10, 90), 250)}px` }}>
+            <p className="text-xl font-bold text-black bg-transparent outline-none w-fit text-center truncate" style={{ width: `${Math.min(Math.max(title!.length * 10, 100), 250)}px` }}>
               {title}
             </p>
             <p className="w-[54px] text-[10px] font-semibold bg-black/20 py-[2px] px-[4px]">
@@ -235,7 +235,7 @@ const NavBar = ({
             type="text"
             value={title}
             className="text-2xl font-bold text-black bg-transparent outline-none w-fit text-center"
-            style={{ width: `${Math.min(Math.max(title!.length * 10, 90), 250)}px` }}
+            style={{ width: `${Math.min(Math.max(title!.length * 10, 100), 250)}px` }}
             onChange={(e) => {
               setTitle(e.target.value);
             }}
@@ -269,7 +269,7 @@ const NavBar = ({
 
       {isDoc && setTitle && currentUserType !== "editor" && (
         <div className="flex md:hidden items-center justify-center my-4">
-          <p className="text-2xl font-bold text-black bg-transparent outline-none w-fit text-center truncate"  style={{ width: `${Math.min(Math.max(title!.length * 10, 90), 250)}px` }}>
+          <p className="text-2xl font-bold text-black bg-transparent outline-none w-fit text-center truncate"  style={{ width: `${Math.min(Math.max(title!.length * 10, 100), 250)}px` }}>
             {title}
           </p>
           <p className="w-[54px] text-[10px] bg-black/20 py-[2px] px-[4px]">
