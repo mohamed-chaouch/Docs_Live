@@ -1,6 +1,6 @@
 "use client";
 
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -25,7 +25,7 @@ const SharePopUp = ({
   setCollaborators,
   creatorId,
 }: SharePopUpProps) => {
-    const userSelf = useSelf();
+  const userSelf = useSelf();
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -64,10 +64,10 @@ const SharePopUp = ({
     try {
       if (!user || !cookies.accessToken) return router.push("/");
       setLoading(true);
-
+      
       const responseRoom = await api.put(
         `document/update-document-access/${roomId}/${email}/${userType}`,
-        {updatedBy: user}
+        { updatedBy: userSelf.info }
       );
 
       handleUsers(responseRoom.data.room.usersAccesses);
