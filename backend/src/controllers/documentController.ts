@@ -222,9 +222,9 @@ export const updateDocumentAccess = async (
         subjectId: notificationId,
         activityData: {
           userType,
-          title: `You have been granted ${userType} access to the document by ${updatedBy.firstName} ${updatedBy.lastName}`,
-          updatedBy: `${updatedBy.firstName} ${updatedBy.lastName}`,
-          avatar: `${process.env.BASE_URL}${updatedBy.imageUrl}`,
+          title: `You have been granted ${userType} access to the document by ${updatedBy.name}`,
+          updatedBy: updatedBy.name,
+          avatar: updatedBy.avatar,
           email: updatedBy.email,
         },
         roomId,
