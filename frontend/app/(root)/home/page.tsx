@@ -132,12 +132,6 @@ const Home = () => {
       : 8 + (page - 1) * 9 // End based on subsequent pages' limits
   );
 
-  console.log(limitPages, ": limitPages: ");
-  console.log(page, ": page: ");
-  console.log(totalPages, ": totalPages: ");
-  console.log(filteredDocuments, ": filteredDocuments");
-  console.log(paginatedDocuments, ": paginatedDocuments");
-
   return (
     <div className="sm:h-[calc(100vh-8px)] relative">
       <NavBar listDoc={true} />
@@ -170,7 +164,7 @@ const Home = () => {
       )}
 
       {totalPages > 1 && (
-        <Pagination className="sm:absolute sm:bottom-6 sm:right-2 my-6 sm:my-0">
+        <Pagination className="md:absolute md:bottom-6 md:right-2 my-6 md:my-0">
           <PaginationContent className="flex items-center justify-end w-full pr-3 md:pr-16">
             <Button
               className="w-8 h-8 rounded-full bg-yellow-1 hover:bg-orange-1"
