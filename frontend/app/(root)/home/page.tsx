@@ -92,15 +92,29 @@ const Home = () => {
   const [filteredDocuments, setFilteredDocuments] = useState<Room[]>([]);
 
   useEffect(() => {
-    if(documents.length > 0){
+    if (documents.length > 0) {
       const filtered = documents.filter((document) =>
         document.metadata.title
           .toLowerCase()
           .includes(debouncedQuery.toLowerCase())
       );
       setFilteredDocuments(filtered);
-      setTotalPages(Math.ceil(filtered.length / Number(limitPages)));
-    }else {
+      // First page has a limit of 8, subsequent pages have a limit of 9
+      const firstPageLimit = 8;
+      const subsequentPageLimit = 9;
+
+      if (filtered.length <= firstPageLimit) {
+        // All items fit on the first page
+        setTotalPages(1);
+      } else {
+        // Calculate the remaining items after the first page
+        const remainingItems = filtered.length - firstPageLimit; // total cards left after the fill of cards in the page 1
+        const remainingPages = Math.ceil(remainingItems / subsequentPageLimit);
+
+        // Total pages = 1 (for the first page) + remaining pages
+        setTotalPages(1 + remainingPages);
+      }
+    } else {
       setFilteredDocuments([]);
       setTotalPages(1);
     }
@@ -110,10 +124,19 @@ const Home = () => {
   const displayedDocuments =
     page === 1 ? [<AddNewDocument key="add-card" />] : [];
   const paginatedDocuments = filteredDocuments.slice(
-    (page - 1) * limitPages,
-    page * limitPages
+    page === 1
+      ? 0 // Start from the beginning for page 1
+      : 8 + (page - 2) * 9, // Start after the first page + items from previous pages
+    page === 1
+      ? 8 // Limit for page 1
+      : 8 + (page - 1) * 9 // End based on subsequent pages' limits
   );
 
+  console.log(limitPages, ": limitPages: ");
+  console.log(page, ": page: ");
+  console.log(totalPages, ": totalPages: ");
+  console.log(filteredDocuments, ": filteredDocuments");
+  console.log(paginatedDocuments, ": paginatedDocuments");
 
   return (
     <div className="sm:h-[calc(100vh-8px)] relative">
@@ -138,7 +161,11 @@ const Home = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 px-6 md:px-24 gap-y-8 md:gap-x-12 xl:gap-x-24">
           {displayedDocuments}
-          <ListDocuments documents={paginatedDocuments} setDocuments={setDocuments} page={page} />
+          <ListDocuments
+            documents={paginatedDocuments}
+            setDocuments={setDocuments}
+            page={page}
+          />
         </div>
       )}
 
